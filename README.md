@@ -1,2 +1,10 @@
-A sample command-line application with an entrypoint in `bin/`, library code
-in `lib/`, and example unit test in `test/`.
+## Building from source
+Generated classes are built using
+```
+dart run build_runner build
+```
+or
+```
+dart run build_runner watch
+```
+for continuous build after each change.
