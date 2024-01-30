@@ -1,6 +1,7 @@
 import 'package:csv/csv.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
+import 'package:releaser/paths/paths.dart';
 import 'package:releaser/software/software.dart';
 import 'package:releaser/software/software_csv_datasource.dart';
 import 'package:test/test.dart';
@@ -86,7 +87,7 @@ void main() {
 }
 
 void mockFileReading(File file, List<String> lines) {
-  String fileContent = lines.join(Platform.isWindows ? '\r\n' : '\n');
+  String fileContent = lines.join(Paths.getNewLine());
   when(file.readAsStringSync()).thenReturn(fileContent);
   when(file.existsSync()).thenReturn(true);
 }

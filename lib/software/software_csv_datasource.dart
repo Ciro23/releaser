@@ -6,6 +6,8 @@ import 'dart:io';
 
 import 'package:uuid/uuid.dart';
 
+import '../paths/paths.dart';
+
 /// This implementation uses a CSV file to store the [Software]
 /// objects.
 class SoftwareCsvRepository implements SoftwareRepository {
@@ -41,10 +43,10 @@ class SoftwareCsvRepository implements SoftwareRepository {
       releasePath: software.releasePath,
     );
 
-    String csv = _listToCsvConverter.convert([
+    String csvLine =  _listToCsvConverter.convert([
       savedSoftware.props
-    ]);
-    _csvFile.writeAsStringSync(csv, mode: FileMode.append);
+    ]) + Paths.getNewLine();
+    _csvFile.writeAsStringSync(csvLine, mode: FileMode.append);
 
     return savedSoftware;
   }

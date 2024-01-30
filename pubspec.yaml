@@ -8,6 +8,7 @@ environment:
 
 # Add regular dependencies here.
 dependencies:
+  args: ^2.4.2
   csv: ^5.1.1
   equatable: ^2.0.5
   mockito: ^5.4.4
