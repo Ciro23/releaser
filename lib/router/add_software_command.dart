@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:args/command_runner.dart';
 import 'package:releaser/software/software.dart';
 import 'package:releaser/software/software_repository.dart';
@@ -45,6 +47,7 @@ class AddSoftwareCommand extends Command {
       releasePath: argResults?['dest'],
     );
     await _softwareRepository.save(software);
-    print("Software '${software.name}' added successfully to '${Paths.getSoftwarePath()}'");
+    stdout.writeln("Software '${software.name}'"
+        " added successfully to '${Paths.getSoftwarePath()}'");
   }
 }

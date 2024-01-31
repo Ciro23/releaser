@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:args/command_runner.dart';
 
 import 'add_software_command.dart';
@@ -20,10 +22,10 @@ class MenuRouter implements Router {
       ..addCommand(_addSoftwareCommand)
       ..run(arguments).catchError((error) {
         if (error is ArgumentError) {
-          print("Error parsing the command arguments: ${error.message}");
-          print(_addSoftwareCommand.usage);
+          stdout.writeln("Error parsing the command arguments: ${error.message}");
+          stdout.writeln(_addSoftwareCommand.usage);
         } else {
-          print("An error as occurred: $error");
+          stderr.writeln("An error as occurred: $error");
         }
       });
   }
