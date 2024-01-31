@@ -2,12 +2,16 @@ import 'dart:io';
 
 /// Provides paths useful for application file
 /// handling.
+/// 
+/// All directory paths ends with a separator.
+///
+/// All file paths do not ends with a separator.
 class Paths {
 
   /// The main folder for all application files.
   static String getReleaserPath() {
     String sep = getSeparator();
-    return '${getHomePath()}$sep.releaser$sep';
+    return '${getHomePath()}.releaser$sep';
   }
 
   /// The file containing the list of saved software.
@@ -17,11 +21,12 @@ class Paths {
 
   /// The OS specific home path.
   static String getHomePath() {
+    String sep = getSeparator();
     if (Platform.isWindows) {
-      return Platform.environment['UserProfile']!;
+      return Platform.environment['UserProfile']! + sep;
     }
 
-    return Platform.environment['HOME']!;
+    return Platform.environment['HOME']! + sep;
   }
 
   /// The OS specific path separator.
