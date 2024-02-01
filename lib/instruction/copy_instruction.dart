@@ -1,8 +1,7 @@
 import 'dart:io';
 
-import 'package:releaser/release/instruction.dart';
-
 import '../application/process_runner.dart';
+import 'instruction.dart';
 
 /// An OS dependent instruction to copy a
 /// file or directory.

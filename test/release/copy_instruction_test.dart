@@ -1,7 +1,7 @@
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:releaser/application/process_runner.dart';
-import 'package:releaser/release/copy_instruction.dart';
+import 'package:releaser/instruction/copy_instruction.dart';
 import 'package:test/test.dart';
 
 import 'copy_instruction_test.mocks.dart';

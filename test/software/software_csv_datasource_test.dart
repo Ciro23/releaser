@@ -64,7 +64,10 @@ void main() {
     when(uuid.v4()).thenReturn(ids[0].toString());
 
     Software actual = await softwareCsvRepository.save(software[0]);
-    verify(mockFile.writeAsStringSync(fileLines[0], mode: FileMode.append)).called(1);
+    verify(
+      mockFile.writeAsStringSync(fileLines[0] + Paths.getNewLine(),
+          mode: FileMode.append),
+    ).called(1);
 
     expect(actual, expected);
   });
