@@ -1,37 +1,26 @@
-import 'package:csv/csv.dart';
+import 'package:releaser/csv/csv_manager.dart';
 import 'package:releaser/software/software.dart';
 import 'package:releaser/software/software_repository.dart';
 
-import 'dart:io';
-
 import 'package:uuid/uuid.dart';
 
-import '../paths/paths.dart';
 
 /// This implementation uses a CSV file to store the [Software]
 /// objects.
-class SoftwareCsvRepository implements SoftwareRepository {
-  /// All software data is stored in this file.
-  final File _csvFile;
-
+class SoftwareCsvDataSource implements SoftwareRepository {
   final Uuid _uuid;
-  final CsvToListConverter _csvToListConverter;
-  final ListToCsvConverter _listToCsvConverter;
+  final CsvManager<Software> _csvManager;
 
   final int _idIndex = 0;
   final int _nameIndex = 1;
   final int _rootPathIndex = 2;
   final int _releasePathIndex = 3;
 
-  SoftwareCsvRepository({
-    required File csvFile,
+  SoftwareCsvDataSource({
     required Uuid uuid,
-    required CsvToListConverter csvToListConverter,
-    required ListToCsvConverter listToCsvConverter,
-  })  : _csvFile = csvFile,
-        _uuid = uuid,
-        _csvToListConverter = csvToListConverter,
-        _listToCsvConverter = listToCsvConverter;
+    required CsvManager<Software> csvManager,
+  })  : _uuid = uuid,
+        _csvManager = csvManager;
 
   @override
   Future<Software> save(Software software) async {
@@ -43,25 +32,13 @@ class SoftwareCsvRepository implements SoftwareRepository {
       releasePath: software.releasePath,
     );
 
-    String csvLine =  _listToCsvConverter.convert([
-      savedSoftware.props
-    ]) + Paths.getNewLine();
-    _csvFile.writeAsStringSync(csvLine, mode: FileMode.append);
-
+    _csvManager.appendObject(savedSoftware);
     return savedSoftware;
   }
 
   @override
   Future<List<Software>> findAll() async {
-    List<List<dynamic>> csvLines = _decodeCsv();
-    List<Software> softwareList = [];
-
-    for (var csvLine in csvLines) {
-      Software software = _readSoftwareFromCsv(csvLine);
-      softwareList.add(software);
-    }
-
-    return softwareList;
+    return _csvManager.readObjects(_readSoftwareFromCsv);
   }
 
   @override
@@ -83,17 +60,5 @@ class SoftwareCsvRepository implements SoftwareRepository {
       releasePath: releasePath,
     );
     return software;
-  }
-
-  List<List<dynamic>> _decodeCsv() {
-    var csvContent = _getFileContent();
-    return _csvToListConverter.convert(csvContent);
-  }
-
-  String _getFileContent() {
-    if (!_csvFile.existsSync()) {
-      _csvFile.createSync();
-    }
-    return _csvFile.readAsStringSync();
   }
 }

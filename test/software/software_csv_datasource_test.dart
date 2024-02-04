@@ -1,6 +1,7 @@
 import 'package:csv/csv.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
+import 'package:releaser/csv/csv_manager.dart';
 import 'package:releaser/paths/paths.dart';
 import 'package:releaser/software/software.dart';
 import 'package:releaser/software/software_csv_datasource.dart';
@@ -18,7 +19,7 @@ import 'software_csv_datasource_test.mocks.dart';
 void main() {
   Uuid uuid = MockUuid();
   late File mockFile;
-  late SoftwareCsvRepository softwareCsvRepository;
+  late SoftwareCsvDataSource softwareCsvRepository;
 
   List<UuidValue> ids = [
     UuidValue.fromString("29214dab-3ef1-47e1-9cfe-46baf19fb6f0"),
@@ -45,11 +46,13 @@ void main() {
 
   setUp(() {
     mockFile = MockFile();
-    softwareCsvRepository = SoftwareCsvRepository(
-      csvFile: mockFile,
+    softwareCsvRepository = SoftwareCsvDataSource(
       uuid: uuid,
-      csvToListConverter: CsvToListConverter(),
-      listToCsvConverter: ListToCsvConverter(),
+      csvManager: CsvManager(
+        csvFile: mockFile,
+        csvToListConverter: CsvToListConverter(),
+        listToCsvConverter: ListToCsvConverter(),
+      ),
     );
   });
 
