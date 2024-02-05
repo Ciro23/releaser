@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:csv/csv.dart';
 import 'package:releaser/csv/csv_manager.dart';
+import 'package:releaser/instruction/instruction_csv.dart';
 import 'package:releaser/paths/paths.dart';
 import 'package:releaser/router/add_software_command.dart';
 import 'package:releaser/router/menu_router.dart';
@@ -17,15 +18,26 @@ void main(List<String> arguments) {
   }
 
   String softwareFilePath = Paths.getSoftwarePath();
+  String instructionFilePath = Paths.getInstructionPath();
+
+  final csvToList = CsvToListConverter();
+  final listToCsv = ListToCsvConverter();
+
   CsvManager<SoftwareCsv> softwareCsvManager = CsvManager(
     csvFile: File(softwareFilePath),
-    csvToListConverter: CsvToListConverter(),
-    listToCsvConverter: ListToCsvConverter(),
+    csvToListConverter: csvToList,
+    listToCsvConverter: listToCsv,
+  );
+  CsvManager<InstructionCsv> instructionCsvManager = CsvManager(
+    csvFile: File(instructionFilePath),
+    csvToListConverter: csvToList,
+    listToCsvConverter: listToCsv,
   );
 
   SoftwareRepository softwareRepository = SoftwareCsvDataSource(
     uuid: Uuid(),
-    csvManager: softwareCsvManager,
+    softwareCsvManager: softwareCsvManager,
+    instructionCsvManager: instructionCsvManager,
   );
 
   AddSoftwareCommand addSoftwareCommand = AddSoftwareCommand(softwareRepository);

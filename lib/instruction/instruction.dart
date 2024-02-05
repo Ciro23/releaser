@@ -1,3 +1,6 @@
 abstract class Instruction {
-  void execute();
+  String get name;
+  List<String> get arguments;
+
+  void execute(); // TODO: visitor pattern
 }

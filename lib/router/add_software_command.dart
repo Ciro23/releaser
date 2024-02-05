@@ -45,6 +45,7 @@ class AddSoftwareCommand extends Command {
       name: argResults?['name'],
       rootPath: argResults?['root'],
       releasePath: argResults?['dest'],
+      releaseInstructions: [],
     );
     await _softwareRepository.save(software);
     stdout.writeln("Software '${software.name}'"

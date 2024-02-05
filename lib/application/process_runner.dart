@@ -1,5 +1,3 @@
-
-
 import 'dart:io';
 
 /// This is a wrapper for the [Process] class to make

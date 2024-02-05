@@ -5,6 +5,8 @@ import 'package:equatable/equatable.dart';
 
 import '../paths/paths.dart';
 
+/// Handles read and write operations for a [_csvFile]
+/// for the specified type [T].
 class CsvManager<T extends Equatable> {
   /// All software data is stored in this file.
   final File _csvFile;
@@ -23,7 +25,7 @@ class CsvManager<T extends Equatable> {
 
   void appendObjects(List<T> objects) {
     List<List<Object?>> propertiesOfObjects = objects.map((e) => e.props).toList();
-    String csvContent = _listToCsvConverter.convert(propertiesOfObjects) + Paths.getNewLine();
+    String csvContent = _listToCsvConverter.convert(propertiesOfObjects) + Platform.lineTerminator;
     _csvFile.writeAsStringSync(csvContent, mode: FileMode.append);
   }
 

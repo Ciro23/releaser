@@ -27,6 +27,7 @@ void main() {
       name: "test",
       rootPath: "/home/software/root",
       releasePath: "/home/software/dest",
+      releaseInstructions: [],
     );
 
     when(softwareRepository.save(software)).thenAnswer((_) async {});

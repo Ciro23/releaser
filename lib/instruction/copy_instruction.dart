@@ -49,4 +49,10 @@ class CopyInstruction implements Instruction {
 
     processRunner.run(commands);
   }
+
+  @override
+  String get name => "Copy";
+
+  @override
+  List<String> get arguments => [buildPath, destinationPath];
 }

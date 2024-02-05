@@ -19,6 +19,11 @@ class Paths {
     return '${getReleaserPath()}software.csv';
   }
 
+  /// The file containing the list of saved instructions.
+  static String getInstructionPath() {
+    return '${getReleaserPath()}instruction.csv';
+  }
+
   /// The OS specific home path.
   static String getHomePath() {
     String sep = getSeparator();
@@ -36,9 +41,5 @@ class Paths {
     }
 
     return '/';
-  }
-
-  static String getNewLine() {
-    return Platform.isWindows ? "\r\n" : "\n";
   }
 }
