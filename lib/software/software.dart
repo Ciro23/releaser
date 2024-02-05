@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:releaser/software/software_csv.dart';
 import 'package:uuid/uuid.dart';
 
 class Software extends Equatable {
@@ -13,6 +14,15 @@ class Software extends Equatable {
     required this.rootPath,
     required this.releasePath,
   });
+
+  factory Software.fromCsv(SoftwareCsv csv) {
+    return Software(
+      id: csv.id,
+      name: csv.name,
+      rootPath: csv.rootPath,
+      releasePath: csv.releasePath,
+    );
+  }
 
   @override
   List<Object?> get props => [

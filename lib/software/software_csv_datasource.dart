@@ -1,15 +1,15 @@
 import 'package:releaser/csv/csv_manager.dart';
 import 'package:releaser/software/software.dart';
+import 'package:releaser/software/software_csv.dart';
 import 'package:releaser/software/software_repository.dart';
 
 import 'package:uuid/uuid.dart';
-
 
 /// This implementation uses a CSV file to store the [Software]
 /// objects.
 class SoftwareCsvDataSource implements SoftwareRepository {
   final Uuid _uuid;
-  final CsvManager<Software> _csvManager;
+  final CsvManager<SoftwareCsv> _csvManager;
 
   final int _idIndex = 0;
   final int _nameIndex = 1;
@@ -18,14 +18,14 @@ class SoftwareCsvDataSource implements SoftwareRepository {
 
   SoftwareCsvDataSource({
     required Uuid uuid,
-    required CsvManager<Software> csvManager,
+    required CsvManager<SoftwareCsv> csvManager,
   })  : _uuid = uuid,
         _csvManager = csvManager;
 
   @override
   Future<Software> save(Software software) async {
     UuidValue id = UuidValue.fromString(_uuid.v4());
-    Software savedSoftware = Software(
+    SoftwareCsv savedSoftware = SoftwareCsv(
       id: id,
       name: software.name,
       rootPath: software.rootPath,
@@ -33,12 +33,15 @@ class SoftwareCsvDataSource implements SoftwareRepository {
     );
 
     _csvManager.appendObject(savedSoftware);
-    return savedSoftware;
+    return Software.fromCsv(savedSoftware);
   }
 
   @override
   Future<List<Software>> findAll() async {
-    return _csvManager.readObjects(_readSoftwareFromCsv);
+    return _csvManager
+        .readObjects(_readSoftwareFromCsv)
+        .map((e) => Software.fromCsv(e))
+        .toList();
   }
 
   @override
@@ -47,13 +50,13 @@ class SoftwareCsvDataSource implements SoftwareRepository {
     return softwareList.where((s) => s.name == name).firstOrNull;
   }
 
-  Software _readSoftwareFromCsv(List<dynamic> csvLine) {
+  SoftwareCsv _readSoftwareFromCsv(List<dynamic> csvLine) {
     UuidValue id = UuidValue.fromString(csvLine[_idIndex]);
     String name = csvLine[_nameIndex];
     String rootPath = csvLine[_rootPathIndex];
     String releasePath = csvLine[_releasePathIndex];
 
-    Software software = Software(
+    SoftwareCsv software = SoftwareCsv(
       id: id,
       name: name,
       rootPath: rootPath,
