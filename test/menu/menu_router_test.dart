@@ -1,6 +1,7 @@
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:releaser/router/add_software_command.dart';
+import 'package:releaser/router/list_software_command.dart';
 import 'package:releaser/router/menu_router.dart';
 import 'package:releaser/software/software.dart';
 import 'package:releaser/software/software_repository.dart';
@@ -14,12 +15,17 @@ import 'menu_router_test.mocks.dart';
 void main() {
   // Dependencies
   final SoftwareRepository softwareRepository = MockSoftwareRepository();
-  final AddSoftwareCommand addSoftwareCommand =
-      AddSoftwareCommand(softwareRepository);
+  final AddSoftwareCommand addSoftwareCommand = AddSoftwareCommand(
+    softwareRepository,
+  );
+  final ListSoftwareCommand listSoftwareCommand = ListSoftwareCommand(
+    softwareRepository,
+  );
 
   // System Under Test
   final MenuRouter menuRouter = MenuRouter(
     addSoftwareCommand: addSoftwareCommand,
+    listSoftwareCommand: listSoftwareCommand,
   );
 
   test("add software", () {
