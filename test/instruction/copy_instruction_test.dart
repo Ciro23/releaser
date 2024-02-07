@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:releaser/application/process_runner.dart';
@@ -25,8 +27,8 @@ void main() {
   }
 
   void verifyCommandIsCalled(String os, List<String> commands) {
-    // Do nothing.
-    when(processRunner.run(commands)).thenReturn(null);
+    var processResult = ProcessResult(0, 0, "expectedOutput", '');
+    when(processRunner.run(commands)).thenAnswer((_) async => processResult);
 
     CopyInstruction copyInstruction = getInstruction(os);
     copyInstruction.execute();

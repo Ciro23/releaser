@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:args/command_runner.dart';
 import 'package:csv/csv.dart';
 import 'package:releaser/csv/csv_manager.dart';
 import 'package:releaser/instruction/instruction_csv.dart';
@@ -41,16 +42,36 @@ void main(List<String> arguments) {
     instructionCsvManager: instructionCsvManager,
   );
 
+  CommandRunner<void> commandRunner = CommandRunner(
+    "Releaser",
+    "Manage your software releases",
+  );
+  onPrint(Object? message) {
+    stdout.writeln(message);
+  }
+
   AddSoftwareCommand addSoftwareCommand = AddSoftwareCommand(
     softwareRepository,
+    onPrint,
   );
   ListSoftwareCommand listSoftwareCommand = ListSoftwareCommand(
     softwareRepository,
+    onPrint,
   );
   MenuRouter menuRouter = MenuRouter(
+    commandRunner: commandRunner,
     addSoftwareCommand: addSoftwareCommand,
     listSoftwareCommand: listSoftwareCommand,
   );
 
-  menuRouter.runSelectedAction(arguments);
+  menuRouter.runSelectedAction(arguments).catchError((error) {
+    if (error is ArgumentError) {
+      stdout.writeln("Error parsing the command arguments:"
+          " ${error.message}");
+      stdout.writeln(error.stackTrace);
+    } else {
+      stderr.writeln("An error as occurred: $error");
+    }
+  });
+  ;
 }

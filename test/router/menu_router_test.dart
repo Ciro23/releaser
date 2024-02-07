@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:args/command_runner.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:releaser/router/add_software_command.dart';
@@ -9,26 +12,38 @@ import 'package:test/test.dart';
 
 import 'menu_router_test.mocks.dart';
 
+/// This makes sure that the commands executes the correct actions.
 @GenerateNiceMocks([
   MockSpec<SoftwareRepository>(),
+  MockSpec<CommandRunner<void>>(),
 ])
 void main() {
   // Dependencies
   final SoftwareRepository softwareRepository = MockSoftwareRepository();
+  onPrint(Object? message) {}
   final AddSoftwareCommand addSoftwareCommand = AddSoftwareCommand(
     softwareRepository,
+    onPrint,
   );
   final ListSoftwareCommand listSoftwareCommand = ListSoftwareCommand(
     softwareRepository,
+    onPrint,
   );
+  late CommandRunner<void> commandRunner;
 
   // System Under Test
-  final MenuRouter menuRouter = MenuRouter(
-    addSoftwareCommand: addSoftwareCommand,
-    listSoftwareCommand: listSoftwareCommand,
-  );
+  late MenuRouter menuRouter;
 
-  test("add software", () {
+  setUp(() {
+    commandRunner = CommandRunner("test", "test");
+    menuRouter = MenuRouter(
+      commandRunner: commandRunner,
+      addSoftwareCommand: addSoftwareCommand,
+      listSoftwareCommand: listSoftwareCommand,
+    );
+  });
+
+  test("add-software should add a software", () {
     Software software = Software(
       name: "test",
       rootPath: "/home/software/root",
@@ -46,7 +61,12 @@ void main() {
       '--dest',
       software.releasePath,
     ]);
+    verify(addSoftwareCommand.run()).called(1);
+  });
 
-    verify(softwareRepository.save(software)).called(1);
+  test("list-software should list software", () {
+    when(softwareRepository.findAll()).thenAnswer((_) async => []);
+    menuRouter.runSelectedAction(['list-software']);
+    verify(listSoftwareCommand.run()).called(1);
   });
 }

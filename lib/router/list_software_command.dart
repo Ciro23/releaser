@@ -1,14 +1,13 @@
-import 'dart:io';
-
 import 'package:args/command_runner.dart';
 import 'package:releaser/software/software_repository.dart';
 
 import '../software/software.dart';
 
-class ListSoftwareCommand extends Command {
+class ListSoftwareCommand extends Command<void> {
   final SoftwareRepository _softwareRepository;
+  final void Function(Object?) onPrint;
 
-  ListSoftwareCommand(this._softwareRepository);
+  ListSoftwareCommand(this._softwareRepository, this.onPrint);
 
   @override
   String get name => "list-software";
@@ -20,11 +19,11 @@ class ListSoftwareCommand extends Command {
   void run() async {
     List<Software> softwareList = await _softwareRepository.findAll();
     for (var element in softwareList) {
-      stdout.writeln("Name: ${element.name}");
-      stdout.writeln("Root Path: ${element.rootPath}");
-      stdout.writeln("Release Path: ${element.releasePath}");
-      stdout.writeln("Instructions: ${element.releaseInstructions}");
-      stdout.writeln("");
+      onPrint("Name: ${element.name}");
+      onPrint("Root Path: ${element.rootPath}");
+      onPrint("Release Path: ${element.releasePath}");
+      onPrint("Instructions: ${element.releaseInstructions}");
+      onPrint("");
     }
   }
 }

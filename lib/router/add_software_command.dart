@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:args/command_runner.dart';
 import 'package:releaser/software/software.dart';
 import 'package:releaser/software/software_repository.dart';
@@ -8,8 +6,9 @@ import '../paths/paths.dart';
 
 /// Software are required to create and configure
 /// a release.
-class AddSoftwareCommand extends Command {
+class AddSoftwareCommand extends Command<void> {
   final SoftwareRepository _softwareRepository;
+  final void Function(Object?) onPrint;
 
   @override
   String get name => "add-software";
@@ -17,7 +16,7 @@ class AddSoftwareCommand extends Command {
   @override
   String get description => "Save a software";
 
-  AddSoftwareCommand(this._softwareRepository) {
+  AddSoftwareCommand(this._softwareRepository, this.onPrint) {
     argParser
       ..addOption(
         'name',
@@ -40,7 +39,7 @@ class AddSoftwareCommand extends Command {
   }
 
   @override
-  void run() async {
+  Future<void> run() async {
     Software software = Software(
       name: argResults?['name'],
       rootPath: argResults?['root'],
@@ -48,7 +47,8 @@ class AddSoftwareCommand extends Command {
       releaseInstructions: [],
     );
     await _softwareRepository.save(software);
-    stdout.writeln("Software '${software.name}'"
-        " added successfully to '${Paths.getSoftwarePath()}'");
+
+    onPrint("Software '${software.name}' added successfully"
+        " to '${Paths.getSoftwarePath()}'");
   }
 }

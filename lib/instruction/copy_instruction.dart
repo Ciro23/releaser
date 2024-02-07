@@ -32,7 +32,7 @@ class CopyInstruction implements Instruction {
   }
 
   @override
-  void execute() {
+  Future<void> execute() async {
     List<String> commands;
 
     if (os == 'windows') {
