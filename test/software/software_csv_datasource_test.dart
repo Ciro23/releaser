@@ -5,7 +5,6 @@ import 'package:releaser/application/process_runner.dart';
 import 'package:releaser/csv/csv_manager.dart';
 import 'package:releaser/instruction/copy_instruction.dart';
 import 'package:releaser/instruction/instruction.dart';
-import 'package:releaser/paths/paths.dart';
 import 'package:releaser/software/software.dart';
 import 'package:releaser/software/software_csv_datasource.dart';
 import 'package:test/test.dart';

@@ -73,5 +73,4 @@ void main(List<String> arguments) {
       stderr.writeln("An error as occurred: $error");
     }
   });
-  ;
 }

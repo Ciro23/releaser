@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:csv/csv.dart';
 import 'package:equatable/equatable.dart';
 
-import '../paths/paths.dart';
 
 /// Handles read and write operations for a [_csvFile]
 /// for the specified type [T].
