@@ -19,6 +19,10 @@ class Software extends Equatable {
     required this.releaseInstructions,
   });
 
+  void addInstruction(Instruction instruction) {
+    releaseInstructions.add(instruction);
+  }
+
   @override
   List<Object?> get props => [
         id,

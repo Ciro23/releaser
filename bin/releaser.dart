@@ -1,10 +1,12 @@
 import 'dart:io';
 
+import 'package:archive/archive_io.dart';
 import 'package:args/command_runner.dart';
 import 'package:csv/csv.dart';
 import 'package:releaser/csv/csv_manager.dart';
 import 'package:releaser/instruction/instruction_csv.dart';
 import 'package:releaser/paths/paths.dart';
+import 'package:releaser/router/add_instruction_command.dart';
 import 'package:releaser/router/add_software_command.dart';
 import 'package:releaser/router/list_software_command.dart';
 import 'package:releaser/router/menu_router.dart';
@@ -58,10 +60,16 @@ void main(List<String> arguments) {
     softwareRepository,
     onPrint,
   );
+  ZipFileEncoder zipFileEncoder = ZipFileEncoder();
+  AddInstructionCommand addInstructionCommand = AddInstructionCommand(
+    softwareRepository: softwareRepository,
+    zipFileEncoder: zipFileEncoder,
+  );
   MenuRouter menuRouter = MenuRouter(
     commandRunner: commandRunner,
     addSoftwareCommand: addSoftwareCommand,
     listSoftwareCommand: listSoftwareCommand,
+    addInstructionCommand: addInstructionCommand,
   );
 
   menuRouter.runSelectedAction(arguments).catchError((error) {

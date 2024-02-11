@@ -1,7 +1,8 @@
-
+import 'package:archive/archive_io.dart';
 import 'package:args/command_runner.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
+import 'package:releaser/router/add_instruction_command.dart';
 import 'package:releaser/router/add_software_command.dart';
 import 'package:releaser/router/list_software_command.dart';
 import 'package:releaser/router/menu_router.dart';
@@ -15,10 +16,12 @@ import 'menu_router_test.mocks.dart';
 @GenerateNiceMocks([
   MockSpec<SoftwareRepository>(),
   MockSpec<CommandRunner<void>>(),
+  MockSpec<ZipFileEncoder>(),
 ])
 void main() {
   // Dependencies
   final SoftwareRepository softwareRepository = MockSoftwareRepository();
+  final ZipFileEncoder zipFileEncoder = MockZipFileEncoder();
   onPrint(Object? message) {}
   final AddSoftwareCommand addSoftwareCommand = AddSoftwareCommand(
     softwareRepository,
@@ -27,6 +30,10 @@ void main() {
   final ListSoftwareCommand listSoftwareCommand = ListSoftwareCommand(
     softwareRepository,
     onPrint,
+  );
+  final AddInstructionCommand addInstructionCommand = AddInstructionCommand(
+    softwareRepository: softwareRepository,
+    zipFileEncoder: zipFileEncoder,
   );
   late CommandRunner<void> commandRunner;
 
@@ -39,6 +46,7 @@ void main() {
       commandRunner: commandRunner,
       addSoftwareCommand: addSoftwareCommand,
       listSoftwareCommand: listSoftwareCommand,
+      addInstructionCommand: addInstructionCommand,
     );
   });
 
