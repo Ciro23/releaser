@@ -82,7 +82,7 @@ class AddInstructionCommand extends Command<void> {
 
     return CopyInstruction(
       processRunner: ProcessRunner(),
-      buildPath: sourcePath!,
+      sourcePath: sourcePath!,
       destinationPath: destinationPath!,
       os: Platform.operatingSystem,
     );
@@ -97,8 +97,8 @@ class AddInstructionCommand extends Command<void> {
 
     return ZipInstruction(
       zipFileEncoder: _zipFileEncoder,
-      source: sourcePath!,
-      destination: destinationPath!,
+      sourcePath: sourcePath!,
+      destinationPath: destinationPath!,
     );
   }
 }

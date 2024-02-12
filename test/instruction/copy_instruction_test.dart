@@ -20,7 +20,7 @@ void main() {
   CopyInstruction getInstruction(String os) {
     return CopyInstruction(
       processRunner: processRunner,
-      buildPath: buildPath,
+      sourcePath: buildPath,
       destinationPath: destPath,
       os: os,
     );

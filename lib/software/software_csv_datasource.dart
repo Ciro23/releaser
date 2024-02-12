@@ -153,7 +153,7 @@ class SoftwareCsvDataSource implements SoftwareRepository {
     if (csv.name.toLowerCase() == "copy") {
       return CopyInstruction(
         processRunner: ProcessRunner(), // Awful. // TODO: visitor.
-        buildPath: arguments[0],
+        sourcePath: arguments[0],
         destinationPath: arguments[1],
         os: Platform.operatingSystem,
       );

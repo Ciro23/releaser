@@ -6,24 +6,24 @@ import 'package:releaser/instruction/instruction.dart';
 class ZipInstruction implements Instruction {
   final ZipFileEncoder zipFileEncoder;
 
-  final String source;
-  final String destination;
+  final String sourcePath;
+  final String destinationPath;
 
   ZipInstruction({
     required this.zipFileEncoder,
-    required this.source,
-    required this.destination,
+    required this.sourcePath,
+    required this.destinationPath,
   });
 
   @override
   Future<void> execute() async {
-    Directory sourceDirectory = Directory(source);
-    zipFileEncoder.zipDirectory(sourceDirectory, filename: destination);
+    Directory sourceDirectory = Directory(sourcePath);
+    zipFileEncoder.zipDirectory(sourceDirectory, filename: destinationPath);
   }
 
   @override
   String get name => "Zip";
 
   @override
-  List<String> get arguments => [source, destination];
+  List<String> get arguments => [sourcePath, destinationPath];
 }

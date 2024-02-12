@@ -8,9 +8,7 @@ import 'instruction.dart';
 class CopyInstruction implements Instruction {
   final ProcessRunner processRunner;
 
-  /// The path to the build file or directory
-  /// relative to the software repository root.
-  final String buildPath;
+  final String sourcePath;
   final String destinationPath;
 
   /// The name of the operating system to know
@@ -20,7 +18,7 @@ class CopyInstruction implements Instruction {
 
   CopyInstruction({
     required this.processRunner,
-    required this.buildPath,
+    required this.sourcePath,
     required this.destinationPath,
     required String os,
   }) : os = os.toLowerCase() {
@@ -40,11 +38,11 @@ class CopyInstruction implements Instruction {
         'cmd',
         '/c',
         'copy',
-        buildPath,
+        sourcePath,
         destinationPath,
       ];
     } else {
-      commands = ['cp', buildPath, destinationPath];
+      commands = ['cp', sourcePath, destinationPath];
     }
 
     processRunner.run(commands);
@@ -54,5 +52,5 @@ class CopyInstruction implements Instruction {
   String get name => "Copy";
 
   @override
-  List<String> get arguments => [buildPath, destinationPath];
+  List<String> get arguments => [sourcePath, destinationPath];
 }

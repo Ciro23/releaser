@@ -27,7 +27,7 @@ void main() {
   List<Instruction> instructions = [
     CopyInstruction(
       processRunner: ProcessRunner(),
-      buildPath: "build/path",
+      sourcePath: "build/path",
       destinationPath: "dest/path",
       os: "macos",
     ),
