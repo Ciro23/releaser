@@ -26,4 +26,13 @@ class ZipInstruction implements Instruction {
 
   @override
   List<String> get arguments => [sourcePath, destinationPath];
+
+  @override
+  String get executeMessage => "Zipping $sourcePath into $destinationPath...";
+
+  @override
+  String toString() {
+    return "Zip (sourcePath: $sourcePath,"
+        " destinationPath: $destinationPath)";
+  }
 }

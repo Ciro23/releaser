@@ -53,4 +53,13 @@ class CopyInstruction implements Instruction {
 
   @override
   List<String> get arguments => [sourcePath, destinationPath];
+
+  @override
+  String get executeMessage => "Copying $sourcePath into $destinationPath...";
+
+  @override
+  String toString() {
+    return "Copy (sourcePath: $sourcePath,"
+        " destinationPath: $destinationPath)";
+  }
 }

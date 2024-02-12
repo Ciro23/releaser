@@ -29,11 +29,11 @@ class AddInstructionCommand extends Command<void> {
         'name',
         abbr: 'n',
         mandatory: true,
-        help: 'The name of the instruction',
+        help: 'The name of the instruction. Available options are: copy, zip',
       )
       ..addOption(
         'software',
-        abbr: 'r',
+        abbr: 's',
         mandatory: true,
         help: 'The name of the software which the instruction will be added to',
       );

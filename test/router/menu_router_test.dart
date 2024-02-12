@@ -6,6 +6,7 @@ import 'package:releaser/router/add_instruction_command.dart';
 import 'package:releaser/router/add_software_command.dart';
 import 'package:releaser/router/list_software_command.dart';
 import 'package:releaser/router/menu_router.dart';
+import 'package:releaser/router/release_command.dart';
 import 'package:releaser/software/software.dart';
 import 'package:releaser/software/software_repository.dart';
 import 'package:test/test.dart';
@@ -35,6 +36,9 @@ void main() {
     softwareRepository: softwareRepository,
     zipFileEncoder: zipFileEncoder,
   );
+  final ReleaseCommand releaseCommand = ReleaseCommand(
+    softwareRepository: softwareRepository,
+  );
   late CommandRunner<void> commandRunner;
 
   // System Under Test
@@ -47,6 +51,7 @@ void main() {
       addSoftwareCommand: addSoftwareCommand,
       listSoftwareCommand: listSoftwareCommand,
       addInstructionCommand: addInstructionCommand,
+      releaseCommand: releaseCommand,
     );
   });
 

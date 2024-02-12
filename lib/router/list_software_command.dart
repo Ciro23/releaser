@@ -3,6 +3,8 @@ import 'package:releaser/software/software_repository.dart';
 
 import '../software/software.dart';
 
+/// Lists all saved software along all their details and
+/// release instructions.
 class ListSoftwareCommand extends Command<void> {
   final SoftwareRepository _softwareRepository;
   final void Function(Object?) onPrint;
@@ -22,7 +24,10 @@ class ListSoftwareCommand extends Command<void> {
       onPrint("Name: ${element.name}");
       onPrint("Root Path: ${element.rootPath}");
       onPrint("Release Path: ${element.releasePath}");
-      onPrint("Instructions: ${element.releaseInstructions}");
+      onPrint("Instructions:");
+      for (var instruction in element.releaseInstructions) {
+        onPrint("  $instruction");
+      }
       onPrint("");
     }
   }

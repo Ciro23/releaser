@@ -1,3 +1,4 @@
+import 'package:archive/archive_io.dart';
 import 'package:csv/csv.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
@@ -19,9 +20,13 @@ import 'software_csv_datasource_test.mocks.dart';
   MockSpec<Uuid>(),
 ])
 void main() {
-  Uuid uuid = MockUuid();
+  // Dependencies
+  final Uuid uuid = MockUuid();
+  final ZipFileEncoder zipFileEncoder = ZipFileEncoder();
   late File softwareFile;
   late File instructionFile;
+
+  // System under test
   late SoftwareCsvDataSource softwareCsvRepository;
 
   List<Instruction> instructions = [
@@ -38,11 +43,13 @@ void main() {
     UuidValue.fromString("229573d0-25fd-4de6-9b8b-e54f638f942b"),
   ];
 
+  // How instructions are stored in the csv file.
   List<String> instructionFileLines = [
     "${softwareIds[0]},Copy,\"build/path,dest/path\"",
     "${softwareIds[1]},Copy,\"build/path,dest/path\""
   ];
 
+  // How software are stored in the csv file.
   List<String> softwareFileLines = [
     "${softwareIds[0]},software1,root1,release1",
     "${softwareIds[1]},software2,root2,release2"
@@ -56,8 +63,7 @@ void main() {
       releasePath: "release1",
       releaseInstructions: instructions,
     ),
-    Software(
-      id: softwareIds[1],
+    Software( // Does not have an id, represents a new software
       name: "software2",
       rootPath: "root2",
       releasePath: "release2",
@@ -83,32 +89,52 @@ void main() {
         csvFile: instructionFile,
         csvToListConverter: csvToList,
         listToCsvConverter: listToCsv,
-      ),
+      ), zipFileEncoder: zipFileEncoder,
     );
   });
 
-  test("save", () async {
+  test("saving a new software should save both software and"
+      " its instructions", () async {
+    int softwareIndex = 1;
     Software expected = Software(
-      id: software[0].id,
-      name: software[0].name,
-      rootPath: software[0].rootPath,
-      releasePath: software[0].releasePath,
-      releaseInstructions: software[0].releaseInstructions,
+      id: softwareIds[softwareIndex],
+      name: software[softwareIndex].name,
+      rootPath: software[softwareIndex].rootPath,
+      releasePath: software[softwareIndex].releasePath,
+      releaseInstructions: software[softwareIndex].releaseInstructions,
     );
 
-    when(uuid.v4()).thenReturn(software[0].id.toString());
+    when(uuid.v4()).thenReturn(softwareIds[softwareIndex].toString());
 
-    Software actual = await softwareCsvRepository.save(software[0]);
+    Software actual = await softwareCsvRepository.save(software[softwareIndex]);
     verify(
       softwareFile.writeAsStringSync(
-        softwareFileLines[0] + Platform.lineTerminator,
+        softwareFileLines[softwareIndex] + Platform.lineTerminator,
         mode: FileMode.append,
       ),
     ).called(1);
 
     verify(
       instructionFile.writeAsStringSync(
-        instructionFileLines[0] + Platform.lineTerminator,
+        instructionFileLines[softwareIndex] + Platform.lineTerminator,
+        mode: FileMode.append,
+      ),
+    ).called(1);
+
+    expect(actual, expected);
+  });
+
+  test("saving an existing software should only save"
+      " its instructions", () async {
+    int softwareIndex = 0;
+    Software expected = software[softwareIndex];
+
+    when(uuid.v4()).thenReturn(softwareIds[softwareIndex].toString());
+
+    Software actual = await softwareCsvRepository.save(software[softwareIndex]);
+    verify(
+      instructionFile.writeAsStringSync(
+        instructionFileLines[softwareIndex] + Platform.lineTerminator,
         mode: FileMode.append,
       ),
     ).called(1);
@@ -117,7 +143,17 @@ void main() {
   });
 
   test("findAll", () async {
-    List<Software> expected = software;
+    List<Software> expected = [];
+    for (int i = 0; i < software.length; i++) {
+      expected.add(Software(
+        id: softwareIds[i],
+        name: software[i].name,
+        rootPath: software[i].rootPath,
+        releasePath: software[i].releasePath,
+        releaseInstructions: software[i].releaseInstructions,
+      ));
+    }
+
     mockFileReading(softwareFile, softwareFileLines);
     mockFileReading(instructionFile, instructionFileLines);
 

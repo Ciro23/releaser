@@ -1,7 +1,9 @@
 import 'dart:io';
 
+import 'package:archive/archive_io.dart';
 import 'package:releaser/csv/csv_manager.dart';
 import 'package:releaser/instruction/instruction_csv.dart';
+import 'package:releaser/instruction/zip_instruction.dart';
 import 'package:releaser/software/software.dart';
 import 'package:releaser/software/software_csv.dart';
 import 'package:releaser/software/software_repository.dart';
@@ -18,6 +20,7 @@ class SoftwareCsvDataSource implements SoftwareRepository {
   final Uuid _uuid;
   final CsvManager<SoftwareCsv> _softwareCsvManager;
   final CsvManager<InstructionCsv> _instructionCsvManager;
+  final ZipFileEncoder _zipFileEncoder;
 
   final int _softwareIdIndex = 0;
   final int _softwareNameIndex = 1;
@@ -32,13 +35,16 @@ class SoftwareCsvDataSource implements SoftwareRepository {
     required Uuid uuid,
     required CsvManager<SoftwareCsv> softwareCsvManager,
     required CsvManager<InstructionCsv> instructionCsvManager,
+    required ZipFileEncoder zipFileEncoder,
   })  : _uuid = uuid,
         _softwareCsvManager = softwareCsvManager,
-        _instructionCsvManager = instructionCsvManager;
+        _instructionCsvManager = instructionCsvManager,
+        _zipFileEncoder = zipFileEncoder;
 
   @override
   Future<Software> save(Software software) async {
-    final softwareId = saveSoftware(software);
+    UuidValue? softwareId = software.id;
+    softwareId ??= saveSoftware(software);
 
     if (software.releaseInstructions.isNotEmpty) {
       saveInstructions(softwareId, software.releaseInstructions);
@@ -132,7 +138,7 @@ class SoftwareCsvDataSource implements SoftwareRepository {
     );
   }
 
-  Software _csvToSoftware (
+  Software _csvToSoftware(
     SoftwareCsv softwareCsv,
     List<InstructionCsv> instructionsCsv,
   ) {
@@ -153,9 +159,17 @@ class SoftwareCsvDataSource implements SoftwareRepository {
     if (csv.name.toLowerCase() == "copy") {
       return CopyInstruction(
         processRunner: ProcessRunner(), // Awful. // TODO: visitor.
-        sourcePath: arguments[0],
-        destinationPath: arguments[1],
+        sourcePath: arguments[0].replaceAll('\"', ''),
+        destinationPath: arguments[1].replaceAll('\"', ''),
         os: Platform.operatingSystem,
+      );
+    }
+
+    if (csv.name.toLowerCase() == "zip") {
+      return ZipInstruction(
+        sourcePath: arguments[0].replaceAll('\"', ''),
+        destinationPath: arguments[1].replaceAll('\"', ''),
+        zipFileEncoder: _zipFileEncoder,
       );
     }
 

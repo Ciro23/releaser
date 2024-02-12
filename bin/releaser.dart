@@ -10,6 +10,7 @@ import 'package:releaser/router/add_instruction_command.dart';
 import 'package:releaser/router/add_software_command.dart';
 import 'package:releaser/router/list_software_command.dart';
 import 'package:releaser/router/menu_router.dart';
+import 'package:releaser/router/release_command.dart';
 import 'package:releaser/software/software_csv.dart';
 import 'package:releaser/software/software_csv_datasource.dart';
 import 'package:releaser/software/software_repository.dart';
@@ -38,10 +39,12 @@ void main(List<String> arguments) {
     listToCsvConverter: listToCsv,
   );
 
+  ZipFileEncoder zipFileEncoder = ZipFileEncoder();
   SoftwareRepository softwareRepository = SoftwareCsvDataSource(
     uuid: Uuid(),
     softwareCsvManager: softwareCsvManager,
     instructionCsvManager: instructionCsvManager,
+    zipFileEncoder: zipFileEncoder,
   );
 
   CommandRunner<void> commandRunner = CommandRunner(
@@ -60,16 +63,19 @@ void main(List<String> arguments) {
     softwareRepository,
     onPrint,
   );
-  ZipFileEncoder zipFileEncoder = ZipFileEncoder();
   AddInstructionCommand addInstructionCommand = AddInstructionCommand(
     softwareRepository: softwareRepository,
     zipFileEncoder: zipFileEncoder,
+  );
+  ReleaseCommand releaseCommand = ReleaseCommand(
+    softwareRepository: softwareRepository,
   );
   MenuRouter menuRouter = MenuRouter(
     commandRunner: commandRunner,
     addSoftwareCommand: addSoftwareCommand,
     listSoftwareCommand: listSoftwareCommand,
     addInstructionCommand: addInstructionCommand,
+    releaseCommand: releaseCommand,
   );
 
   menuRouter.runSelectedAction(arguments).catchError((error) {
