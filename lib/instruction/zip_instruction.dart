@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:archive/archive_io.dart';
 import 'package:releaser/instruction/instruction.dart';
 
-class ZipInstruction implements Instruction {
+class ZipInstruction implements Instruction<ZipInstruction> {
   final ZipFileEncoder zipFileEncoder;
 
   final String sourcePath;
@@ -34,5 +34,14 @@ class ZipInstruction implements Instruction {
   String toString() {
     return "Zip (sourcePath: $sourcePath,"
         " destinationPath: $destinationPath)";
+  }
+
+  @override
+  ZipInstruction create(List<String> arguments) {
+    return ZipInstruction(
+      zipFileEncoder: zipFileEncoder,
+      sourcePath: arguments[0],
+      destinationPath: arguments[1],
+    );
   }
 }

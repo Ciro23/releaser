@@ -13,7 +13,9 @@ import 'package:releaser/router/menu_router.dart';
 import 'package:releaser/router/release_command.dart';
 import 'package:releaser/software/software_csv.dart';
 import 'package:releaser/software/software_csv_datasource.dart';
+import 'package:releaser/software/software_csv_service.dart';
 import 'package:releaser/software/software_repository.dart';
+import 'package:releaser/software/software_service.dart';
 import 'package:uuid/uuid.dart';
 
 void main(List<String> arguments) {
@@ -46,6 +48,7 @@ void main(List<String> arguments) {
     instructionCsvManager: instructionCsvManager,
     zipFileEncoder: zipFileEncoder,
   );
+  SoftwareService softwareService = SoftwareCsvService(softwareRepository);
 
   CommandRunner<void> commandRunner = CommandRunner(
     "Releaser",
@@ -56,19 +59,19 @@ void main(List<String> arguments) {
   }
 
   AddSoftwareCommand addSoftwareCommand = AddSoftwareCommand(
-    softwareRepository,
+    softwareService,
     onPrint,
   );
   ListSoftwareCommand listSoftwareCommand = ListSoftwareCommand(
-    softwareRepository,
+    softwareService,
     onPrint,
   );
   AddInstructionCommand addInstructionCommand = AddInstructionCommand(
-    softwareRepository: softwareRepository,
+    softwareService: softwareService,
     zipFileEncoder: zipFileEncoder,
   );
   ReleaseCommand releaseCommand = ReleaseCommand(
-    softwareRepository: softwareRepository,
+    softwareService: softwareService,
   );
   MenuRouter menuRouter = MenuRouter(
     commandRunner: commandRunner,
@@ -80,9 +83,10 @@ void main(List<String> arguments) {
 
   menuRouter.runSelectedAction(arguments).catchError((error) {
     if (error is ArgumentError) {
-      stdout.writeln("Error parsing the command arguments:"
-          " ${error.message}");
-      stdout.writeln(error.stackTrace);
+      stderr.writeln("Error parsing the command arguments:"
+          " ${error.message}"
+          " ${error.stackTrace}"
+          "\nUse --help for more information.");
     } else {
       stderr.writeln("An error as occurred: $error");
     }

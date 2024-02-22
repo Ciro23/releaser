@@ -1,18 +1,18 @@
 import 'dart:io';
 
 import 'package:args/command_runner.dart';
-import 'package:releaser/software/software_repository.dart';
+import 'package:releaser/software/software_service.dart';
 
 import '../software/software.dart';
 
 /// Starts the execution of all the release instructions for
 /// the specified software.
 class ReleaseCommand extends Command<void> {
-  final SoftwareRepository _softwareRepository;
+  final SoftwareService _softwareService;
 
   ReleaseCommand({
-    required SoftwareRepository softwareRepository,
-  }) : _softwareRepository = softwareRepository {
+    required SoftwareService softwareService,
+  }) : _softwareService = softwareService {
     argParser
       .addOption(
         'software',
@@ -33,7 +33,7 @@ class ReleaseCommand extends Command<void> {
   Future<void> run() async {
     String softwareName = argResults?['software'];
 
-    Software? software = await _softwareRepository.findByName(softwareName);
+    Software? software = await _softwareService.findByName(softwareName);
     if (software == null) {
       throw ArgumentError("Software '$softwareName' not found");
     }

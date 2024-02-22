@@ -8,36 +8,38 @@ import 'package:releaser/router/list_software_command.dart';
 import 'package:releaser/router/menu_router.dart';
 import 'package:releaser/router/release_command.dart';
 import 'package:releaser/software/software.dart';
-import 'package:releaser/software/software_repository.dart';
+import 'package:releaser/software/software_service.dart';
 import 'package:test/test.dart';
 
 import 'menu_router_test.mocks.dart';
 
 /// This makes sure that the commands executes the correct actions.
 @GenerateNiceMocks([
-  MockSpec<SoftwareRepository>(),
+  MockSpec<SoftwareService>(),
   MockSpec<CommandRunner<void>>(),
   MockSpec<ZipFileEncoder>(),
 ])
 void main() {
   // Dependencies
-  final SoftwareRepository softwareRepository = MockSoftwareRepository();
+  final SoftwareService softwareService = MockSoftwareService();
+
   final ZipFileEncoder zipFileEncoder = MockZipFileEncoder();
   onPrint(Object? message) {}
+
   final AddSoftwareCommand addSoftwareCommand = AddSoftwareCommand(
-    softwareRepository,
+    softwareService,
     onPrint,
   );
   final ListSoftwareCommand listSoftwareCommand = ListSoftwareCommand(
-    softwareRepository,
+    softwareService,
     onPrint,
   );
   final AddInstructionCommand addInstructionCommand = AddInstructionCommand(
-    softwareRepository: softwareRepository,
+    softwareService: softwareService,
     zipFileEncoder: zipFileEncoder,
   );
   final ReleaseCommand releaseCommand = ReleaseCommand(
-    softwareRepository: softwareRepository,
+    softwareService: softwareService,
   );
   late CommandRunner<void> commandRunner;
 
@@ -63,7 +65,7 @@ void main() {
       releaseInstructions: [],
     );
 
-    when(softwareRepository.save(software)).thenAnswer((_) async {});
+    when(softwareService.save(software)).thenAnswer((_) async => software);
     menuRouter.runSelectedAction([
       'add-software',
       '--name',
@@ -77,7 +79,7 @@ void main() {
   });
 
   test("list-software should list software", () {
-    when(softwareRepository.findAll()).thenAnswer((_) async => []);
+    when(softwareService.findAll()).thenAnswer((_) async => []);
     menuRouter.runSelectedAction(['list-software']);
     verify(listSoftwareCommand.run()).called(1);
   });

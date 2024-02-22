@@ -19,6 +19,17 @@ class Software extends Equatable {
     required this.releaseInstructions,
   });
 
+  factory Software.copy(Software software) {
+    return Software(
+      id: software.id,
+      name: software.name,
+      rootPath: software.rootPath,
+      releasePath: software.releasePath,
+      releaseInstructions: software.releaseInstructions,
+    );
+
+  }
+
   void addInstruction(Instruction instruction) {
     releaseInstructions.add(instruction);
   }

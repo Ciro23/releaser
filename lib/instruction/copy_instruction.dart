@@ -5,7 +5,7 @@ import 'instruction.dart';
 
 /// An OS dependent instruction to copy a
 /// file or directory.
-class CopyInstruction implements Instruction {
+class CopyInstruction implements Instruction<CopyInstruction> {
   final ProcessRunner processRunner;
 
   final String sourcePath;
@@ -61,5 +61,15 @@ class CopyInstruction implements Instruction {
   String toString() {
     return "Copy (sourcePath: $sourcePath,"
         " destinationPath: $destinationPath)";
+  }
+
+  @override
+  CopyInstruction create(List<String> arguments) {
+    return CopyInstruction(
+      processRunner: processRunner,
+      sourcePath: arguments[0],
+      destinationPath: arguments[1],
+      os: os,
+    );
   }
 }

@@ -5,7 +5,7 @@ import 'package:args/command_runner.dart';
 import 'package:releaser/application/process_runner.dart';
 import 'package:releaser/instruction/copy_instruction.dart';
 import 'package:releaser/instruction/zip_instruction.dart';
-import 'package:releaser/software/software_repository.dart';
+import 'package:releaser/software/software_service.dart';
 
 import '../instruction/instruction.dart';
 import '../software/software.dart';
@@ -16,13 +16,13 @@ import '../software/software.dart';
 /// moment using the standard input.
 /// TODO: needs refactoring.
 class AddInstructionCommand extends Command<void> {
-  final SoftwareRepository _softwareRepository;
+  final SoftwareService _softwareService;
   final ZipFileEncoder _zipFileEncoder;
 
   AddInstructionCommand({
-    required SoftwareRepository softwareRepository,
+    required SoftwareService softwareService,
     required ZipFileEncoder zipFileEncoder,
-  })  : _softwareRepository = softwareRepository,
+  })  : _softwareService = softwareService,
         _zipFileEncoder = zipFileEncoder {
     argParser
       ..addOption(
@@ -50,7 +50,7 @@ class AddInstructionCommand extends Command<void> {
     String instructionName = argResults?['name'];
     String softwareName = argResults?['software'];
 
-    Software? software = await _softwareRepository.findByName(softwareName);
+    Software? software = await _softwareService.findByName(softwareName);
     if (software == null) {
       throw ArgumentError("Software '$softwareName' not found");
     }
@@ -70,7 +70,7 @@ class AddInstructionCommand extends Command<void> {
     }
 
     software.addInstruction(instruction);
-    await _softwareRepository.save(software);
+    await _softwareService.save(software);
   }
 
   Instruction buildCopyInstruction() {

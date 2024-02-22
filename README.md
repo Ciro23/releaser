@@ -21,6 +21,13 @@ releaser add-instruction
 ```
 Based on the implementation, all the required arguments will be asked immediately afterwards via
 the standard input.
+All instruction arguments can contain placeholders: specifically, the following ones are available:
+- `${name}`
+- `${root_path}`
+- `${release_path}`
+
+All placeholders are replaced with the actual values of the software which the instructions belong
+to at runtime.
 
 ### Listing all software
 To list all the saved software, along all their details and release instructions, use:

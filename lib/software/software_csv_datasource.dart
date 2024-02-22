@@ -148,27 +148,27 @@ class SoftwareCsvDataSource implements SoftwareRepository {
       rootPath: softwareCsv.rootPath,
       releasePath: softwareCsv.releasePath,
       releaseInstructions: instructionsCsv.map((e) {
-        return csvToInstruction(e);
+        return _csvToInstruction(e);
       }).toList(),
     );
   }
 
-  Instruction csvToInstruction(InstructionCsv csv) {
+  Instruction _csvToInstruction(InstructionCsv csv) {
     List<dynamic> arguments = csv.arguments.split(",");
 
     if (csv.name.toLowerCase() == "copy") {
       return CopyInstruction(
         processRunner: ProcessRunner(), // Awful. // TODO: visitor.
-        sourcePath: arguments[0].replaceAll('\"', ''),
-        destinationPath: arguments[1].replaceAll('\"', ''),
+        sourcePath: arguments[0].replaceAll('"', ''),
+        destinationPath: arguments[1].replaceAll('"', ''),
         os: Platform.operatingSystem,
       );
     }
 
     if (csv.name.toLowerCase() == "zip") {
       return ZipInstruction(
-        sourcePath: arguments[0].replaceAll('\"', ''),
-        destinationPath: arguments[1].replaceAll('\"', ''),
+        sourcePath: arguments[0].replaceAll('"', ''),
+        destinationPath: arguments[1].replaceAll('"', ''),
         zipFileEncoder: _zipFileEncoder,
       );
     }
