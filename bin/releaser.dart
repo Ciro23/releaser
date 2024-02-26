@@ -3,7 +3,9 @@ import 'dart:io';
 import 'package:archive/archive_io.dart';
 import 'package:args/command_runner.dart';
 import 'package:csv/csv.dart';
-import 'package:releaser/csv/csv_manager.dart';
+import 'package:releaser/csv/file_manager.dart';
+import 'package:releaser/csv/instruction_csv_manager.dart';
+import 'package:releaser/csv/software_csv_manager.dart';
 import 'package:releaser/instruction/instruction_csv.dart';
 import 'package:releaser/paths/paths.dart';
 import 'package:releaser/router/add_instruction_command.dart';
@@ -30,12 +32,12 @@ void main(List<String> arguments) {
   final csvToList = CsvToListConverter();
   final listToCsv = ListToCsvConverter();
 
-  CsvManager<SoftwareCsv> softwareCsvManager = CsvManager(
+  FileManager<SoftwareCsv> softwareCsvManager = SoftwareCsvManager(
     csvFile: File(softwareFilePath),
     csvToListConverter: csvToList,
     listToCsvConverter: listToCsv,
   );
-  CsvManager<InstructionCsv> instructionCsvManager = CsvManager(
+  FileManager<InstructionCsv> instructionCsvManager = InstructionCsvManager(
     csvFile: File(instructionFilePath),
     csvToListConverter: csvToList,
     listToCsvConverter: listToCsv,

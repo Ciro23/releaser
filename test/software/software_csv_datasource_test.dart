@@ -4,6 +4,8 @@ import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:releaser/application/process_runner.dart';
 import 'package:releaser/csv/csv_manager.dart';
+import 'package:releaser/csv/instruction_csv_manager.dart';
+import 'package:releaser/csv/software_csv_manager.dart';
 import 'package:releaser/instruction/copy_instruction.dart';
 import 'package:releaser/instruction/instruction.dart';
 import 'package:releaser/software/software.dart';
@@ -80,12 +82,12 @@ void main() {
 
     softwareCsvRepository = SoftwareCsvDataSource(
       uuid: uuid,
-      softwareCsvManager: CsvManager(
+      softwareCsvManager: SoftwareCsvManager(
         csvFile: softwareFile,
         csvToListConverter: csvToList,
         listToCsvConverter: listToCsv,
       ),
-      instructionCsvManager: CsvManager(
+      instructionCsvManager: InstructionCsvManager(
         csvFile: instructionFile,
         csvToListConverter: csvToList,
         listToCsvConverter: listToCsv,
