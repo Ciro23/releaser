@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:archive/archive_io.dart';
 import 'package:args/command_runner.dart';
-import 'package:releaser/application/process_runner.dart';
 import 'package:releaser/instruction/copy_instruction.dart';
 import 'package:releaser/instruction/zip_instruction.dart';
 import 'package:releaser/software/software_service.dart';
@@ -81,7 +80,6 @@ class AddInstructionCommand extends Command<void> {
     String? destinationPath = stdin.readLineSync();
 
     return CopyInstruction(
-      processRunner: ProcessRunner(),
       sourcePath: sourcePath!,
       destinationPath: destinationPath!,
       os: Platform.operatingSystem,

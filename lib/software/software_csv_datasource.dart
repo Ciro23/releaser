@@ -10,7 +10,6 @@ import 'package:releaser/software/software_repository.dart';
 
 import 'package:uuid/uuid.dart';
 
-import '../application/process_runner.dart';
 import '../instruction/copy_instruction.dart';
 import '../instruction/instruction.dart';
 
@@ -86,18 +85,43 @@ class SoftwareCsvDataSource implements SoftwareRepository {
     return id;
   }
 
+  /// The [instructions] already without an id are inserted
+  /// for the first time, while existing ones are overwritten.
   void saveInstructions(
     UuidValue softwareId,
     List<Instruction> instructions,
   ) {
-    List<InstructionCsv> instructionCsvList = instructions
+    List<InstructionCsv> instructionsToUpdate = instructions
+        .where((i) => i.id != null)
         .map((e) => InstructionCsv(
+              id: e.id!,
               softwareId: softwareId,
               name: e.name,
               arguments: e.arguments.join(","),
             ))
         .toList();
-    _instructionCsvManager.appendObjects(instructionCsvList);
+    if (instructionsToUpdate.isNotEmpty) {
+      // TODO: make "update" working.
+      // At the moment the deserialized "variables" inside instruction
+      // arguments cannot be serialized again, after transforming a
+      // InstructionCSV to Instruction.
+
+      //_instructionCsvManager.deleteObjects(instructionsToUpdate);
+      //_instructionCsvManager.appendObjects(instructionsToUpdate);
+    }
+
+    List<InstructionCsv> instructionsToInsert = instructions
+        .where((i) => i.id == null)
+        .map((e) => InstructionCsv(
+      id: UuidValue.fromString(_uuid.v4()),
+      softwareId: softwareId,
+      name: e.name,
+      arguments: e.arguments.join(","),
+    ))
+        .toList();
+    if (instructionsToInsert.isNotEmpty) {
+      _instructionCsvManager.appendObjects(instructionsToInsert);
+    }
   }
 
   Software _csvToSoftware(
@@ -120,7 +144,7 @@ class SoftwareCsvDataSource implements SoftwareRepository {
 
     if (csv.name.toLowerCase() == "copy") {
       return CopyInstruction(
-        processRunner: ProcessRunner(),
+        id: csv.id,
         sourcePath: arguments[0].replaceAll('"', ''),
         destinationPath: arguments[1].replaceAll('"', ''),
         os: Platform.operatingSystem,
@@ -129,6 +153,7 @@ class SoftwareCsvDataSource implements SoftwareRepository {
 
     if (csv.name.toLowerCase() == "zip") {
       return ZipInstruction(
+        id: csv.id,
         sourcePath: arguments[0].replaceAll('"', ''),
         destinationPath: arguments[1].replaceAll('"', ''),
         zipFileEncoder: _zipFileEncoder,

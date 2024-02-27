@@ -1,6 +1,5 @@
 import 'package:releaser/csv/csv_manager.dart';
 import 'package:releaser/instruction/instruction_csv.dart';
-import 'package:releaser/software/software_csv.dart';
 import 'package:uuid/uuid_value.dart';
 
 class InstructionCsvManager extends CsvManager<InstructionCsv> {
@@ -16,16 +15,19 @@ class InstructionCsvManager extends CsvManager<InstructionCsv> {
         );
 
   static InstructionCsv readInstructionFromCsvLine(List<dynamic> csvLine) {
-    final int instructionSoftwareIdIndex = 0;
-    final int instructionNameIndex = 1;
-    final int instructionArgumentsFirstIndex = 2;
+    final int instructionIdIndex = 0;
+    final int instructionSoftwareIdIndex = 1;
+    final int instructionNameIndex = 2;
+    final int instructionArgumentsFirstIndex = 3;
 
-    UuidValue id = UuidValue.fromString(csvLine[instructionSoftwareIdIndex]);
+    UuidValue id = UuidValue.fromString(csvLine[instructionIdIndex]);
+    UuidValue softwareId = UuidValue.fromString(csvLine[instructionSoftwareIdIndex]);
     String name = csvLine[instructionNameIndex];
     String arguments = csvLine[instructionArgumentsFirstIndex];
 
     return InstructionCsv(
-      softwareId: id,
+      id: id,
+      softwareId: softwareId,
       name: name,
       arguments: arguments,
     );

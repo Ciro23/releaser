@@ -3,6 +3,7 @@ import 'package:uuid/uuid.dart';
 
 /// Represents how a [Instruction] is stored in a CSV file.
 class InstructionCsv extends Equatable {
+  final UuidValue id;
   final UuidValue softwareId;
   final String name;
 
@@ -11,6 +12,7 @@ class InstructionCsv extends Equatable {
   final String arguments;
 
   InstructionCsv({
+    required this.id,
     required this.softwareId,
     required this.name,
     required this.arguments,
@@ -18,6 +20,7 @@ class InstructionCsv extends Equatable {
 
   @override
   List<Object?> get props => [
+        id,
         softwareId,
         name,
         arguments,

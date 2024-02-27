@@ -2,24 +2,32 @@ import 'dart:io';
 
 import 'package:archive/archive_io.dart';
 import 'package:releaser/instruction/instruction.dart';
+import 'package:uuid/uuid.dart';
 
+/// Currently only directories are supported, so it's necessary
+/// that the source path ends with a path separator.
 class ZipInstruction implements Instruction<ZipInstruction> {
+  final UuidValue? _id;
   final ZipFileEncoder zipFileEncoder;
 
   final String sourcePath;
   final String destinationPath;
 
   ZipInstruction({
+    UuidValue? id,
     required this.zipFileEncoder,
     required this.sourcePath,
     required this.destinationPath,
-  });
+  }) : _id = id;
 
   @override
   Future<void> execute() async {
     Directory sourceDirectory = Directory(sourcePath);
     zipFileEncoder.zipDirectory(sourceDirectory, filename: destinationPath);
   }
+
+  @override
+  UuidValue? get id => _id;
 
   @override
   String get name => "Zip";
@@ -37,8 +45,9 @@ class ZipInstruction implements Instruction<ZipInstruction> {
   }
 
   @override
-  ZipInstruction create(List<String> arguments) {
+  ZipInstruction create(UuidValue? id, List<String> arguments) {
     return ZipInstruction(
+      id: id,
       zipFileEncoder: zipFileEncoder,
       sourcePath: arguments[0],
       destinationPath: arguments[1],

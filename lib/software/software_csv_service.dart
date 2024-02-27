@@ -47,7 +47,10 @@ class SoftwareCsvService implements SoftwareService {
         parsedArguments.add(parsedArgument);
       }
 
-      Instruction parsedInstruction = instruction.create(parsedArguments);
+      Instruction parsedInstruction = instruction.create(
+        instruction.id,
+        parsedArguments,
+      );
       parsedInstructions.add(parsedInstruction);
     }
 

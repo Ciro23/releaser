@@ -2,8 +2,6 @@ import 'package:archive/archive_io.dart';
 import 'package:csv/csv.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
-import 'package:releaser/application/process_runner.dart';
-import 'package:releaser/csv/csv_manager.dart';
 import 'package:releaser/csv/instruction_csv_manager.dart';
 import 'package:releaser/csv/software_csv_manager.dart';
 import 'package:releaser/instruction/copy_instruction.dart';
@@ -31,9 +29,13 @@ void main() {
   // System under test
   late SoftwareCsvDataSource softwareCsvRepository;
 
+  List<UuidValue> instructionIds = [
+    UuidValue.fromString("894df962-dc7a-4a3c-9a24-95a902dc075b"),
+    UuidValue.fromString("3b089a1f-6fa3-4f2e-8965-526fcd7b586d"),
+  ];
+
   List<Instruction> instructions = [
     CopyInstruction(
-      processRunner: ProcessRunner(),
       sourcePath: "build/path",
       destinationPath: "dest/path",
       os: "macos",
@@ -47,8 +49,8 @@ void main() {
 
   // How instructions are stored in the csv file.
   List<String> instructionFileLines = [
-    "${softwareIds[0]},Copy,\"build/path,dest/path\"",
-    "${softwareIds[1]},Copy,\"build/path,dest/path\""
+    "${instructionIds[0]},${softwareIds[0]},Copy,\"build/path,dest/path\"",
+    "${instructionIds[1]},${softwareIds[1]},Copy,\"build/path,dest/path\""
   ];
 
   // How software are stored in the csv file.
@@ -106,7 +108,9 @@ void main() {
       releaseInstructions: software[softwareIndex].releaseInstructions,
     );
 
-    when(uuid.v4()).thenReturn(softwareIds[softwareIndex].toString());
+    // In the order they are created.
+    var ids = [softwareIds[softwareIndex], instructionIds[softwareIndex]];
+    when(uuid.v4()).thenAnswer((_) => ids.removeAt(0).toString());
 
     Software actual = await softwareCsvRepository.save(software[softwareIndex]);
     verify(
@@ -131,9 +135,9 @@ void main() {
     int softwareIndex = 0;
     Software expected = software[softwareIndex];
 
-    when(uuid.v4()).thenReturn(softwareIds[softwareIndex].toString());
-
+    when(uuid.v4()).thenReturn(instructionIds[softwareIndex].toString());
     Software actual = await softwareCsvRepository.save(software[softwareIndex]);
+
     verify(
       instructionFile.writeAsStringSync(
         instructionFileLines[softwareIndex] + Platform.lineTerminator,

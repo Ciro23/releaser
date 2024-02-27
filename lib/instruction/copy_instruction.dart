@@ -1,12 +1,15 @@
 import 'dart:io';
 
-import '../application/process_runner.dart';
+import 'package:io/io.dart';
+import 'package:uuid/uuid.dart';
+
 import 'instruction.dart';
 
-/// An OS dependent instruction to copy a
-/// file or directory.
+/// Allows to copy files or directories.
+/// If the source path ends with a path separator, it will
+/// be threaded as a directory, otherwise as a file.
 class CopyInstruction implements Instruction<CopyInstruction> {
-  final ProcessRunner processRunner;
+  final UuidValue? _id;
 
   final String sourcePath;
   final String destinationPath;
@@ -17,11 +20,12 @@ class CopyInstruction implements Instruction<CopyInstruction> {
   final String os;
 
   CopyInstruction({
-    required this.processRunner,
+    UuidValue? id,
     required this.sourcePath,
     required this.destinationPath,
     required String os,
-  }) : os = os.toLowerCase() {
+  })  : os = os.toLowerCase(),
+        _id = id {
     if (!['windows', 'macos', 'linux'].contains(this.os)) {
       throw UnsupportedError(
         'The operating system $os is not supported.',
@@ -31,22 +35,17 @@ class CopyInstruction implements Instruction<CopyInstruction> {
 
   @override
   Future<void> execute() async {
-    List<String> commands;
-
-    if (os == 'windows') {
-      commands = [
-        'cmd',
-        '/c',
-        'copy',
-        sourcePath,
-        destinationPath,
-      ];
-    } else {
-      commands = ['cp', sourcePath, destinationPath];
+    if (sourcePath.endsWith(Platform.pathSeparator)) {
+      copyPath(sourcePath, destinationPath);
+      return;
     }
 
-    processRunner.run(commands);
+    File file = File(sourcePath);
+    file.copy(destinationPath);
   }
+
+  @override
+  UuidValue? get id => _id;
 
   @override
   String get name => "Copy";
@@ -64,9 +63,9 @@ class CopyInstruction implements Instruction<CopyInstruction> {
   }
 
   @override
-  CopyInstruction create(List<String> arguments) {
+  CopyInstruction create(UuidValue? id, List<String> arguments) {
     return CopyInstruction(
-      processRunner: processRunner,
+      id: id,
       sourcePath: arguments[0],
       destinationPath: arguments[1],
       os: os,
