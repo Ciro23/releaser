@@ -7,8 +7,8 @@ import '../instruction/instruction.dart';
 class Software extends Equatable {
   final UuidValue? id;
   final String name;
-  final String rootPath;
-  final String releasePath;
+  final Uri rootPath;
+  final Uri releasePath;
   final List<Instruction> releaseInstructions;
 
   Software({

@@ -90,7 +90,9 @@ void main(List<String> arguments) {
           " ${error.stackTrace}"
           "\nUse --help for more information.");
     } else {
-      stderr.writeln("An error as occurred: $error");
+      stderr.writeln("An error as occurred: $error"
+          " ${error.stackTrace}"
+      );
     }
   });
 }

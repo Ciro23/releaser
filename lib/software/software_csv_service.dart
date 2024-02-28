@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:releaser/instruction/instruction.dart';
 import 'package:releaser/software/software.dart';
 import 'package:releaser/software/software_repository.dart';
@@ -64,9 +66,16 @@ class SoftwareCsvService implements SoftwareService {
   }
 
   String _parseVariables(String text, Software software) {
+    String rootPath = software.rootPath.toFilePath(
+      windows: Platform.isWindows,
+    );
+    String releasePath = software.releasePath.toFilePath(
+      windows: Platform.isWindows,
+    );
+
     return text
         .replaceAll(r'${name}', software.name)
-        .replaceAll(r'${root_path}', software.rootPath)
-        .replaceAll(r'${release_path}', software.releasePath);
+        .replaceAll(r'${root_path}', rootPath)
+        .replaceAll(r'${release_path}', releasePath);
   }
 }

@@ -9,6 +9,7 @@ import 'package:releaser/software/software_csv.dart';
 import 'package:releaser/software/software_repository.dart';
 
 import 'package:uuid/uuid.dart';
+import 'package:path/path.dart' as path;
 
 import '../instruction/copy_instruction.dart';
 import '../instruction/instruction.dart';
@@ -77,8 +78,8 @@ class SoftwareCsvDataSource implements SoftwareRepository {
     SoftwareCsv savedSoftware = SoftwareCsv(
       id: id,
       name: software.name,
-      rootPath: software.rootPath,
-      releasePath: software.releasePath,
+      rootPath: software.rootPath.toFilePath(windows: false),
+      releasePath: software.releasePath.toFilePath(windows: false),
     );
 
     _softwareCsvManager.appendObject(savedSoftware);
@@ -128,11 +129,13 @@ class SoftwareCsvDataSource implements SoftwareRepository {
     SoftwareCsv softwareCsv,
     List<InstructionCsv> instructionsCsv,
   ) {
+    Uri rootPath = Uri.directory(softwareCsv.rootPath);
+    Uri releasePath = Uri.directory(softwareCsv.releasePath);
     return Software(
       id: softwareCsv.id,
       name: softwareCsv.name,
-      rootPath: softwareCsv.rootPath,
-      releasePath: softwareCsv.releasePath,
+      rootPath: rootPath,
+      releasePath: releasePath,
       releaseInstructions: instructionsCsv.map((e) {
         return _csvToInstruction(e);
       }).toList(),
@@ -140,13 +143,13 @@ class SoftwareCsvDataSource implements SoftwareRepository {
   }
 
   Instruction _csvToInstruction(InstructionCsv csv) {
-    List<dynamic> arguments = csv.arguments.split(",");
+    List<String> arguments = csv.arguments.split(",");
 
     if (csv.name.toLowerCase() == "copy") {
       return CopyInstruction(
         id: csv.id,
-        sourcePath: arguments[0].replaceAll('"', ''),
-        destinationPath: arguments[1].replaceAll('"', ''),
+        sourcePath: Uri.file(arguments[0].replaceAll('"', '')),
+        destinationPath: Uri.file(arguments[1].replaceAll('"', '')),
         os: Platform.operatingSystem,
       );
     }
@@ -154,8 +157,8 @@ class SoftwareCsvDataSource implements SoftwareRepository {
     if (csv.name.toLowerCase() == "zip") {
       return ZipInstruction(
         id: csv.id,
-        sourcePath: arguments[0].replaceAll('"', ''),
-        destinationPath: arguments[1].replaceAll('"', ''),
+        sourceDirectory: Directory(arguments[0].replaceAll('"', '')),
+        destinationPath: Uri.file(arguments[1].replaceAll('"', '')),
         zipFileEncoder: _zipFileEncoder,
       );
     }

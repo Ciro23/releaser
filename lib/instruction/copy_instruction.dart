@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:io/io.dart';
 import 'package:uuid/uuid.dart';
+import 'package:path/path.dart' as path;
 
 import 'instruction.dart';
 
@@ -11,8 +12,8 @@ import 'instruction.dart';
 class CopyInstruction implements Instruction<CopyInstruction> {
   final UuidValue? _id;
 
-  final String sourcePath;
-  final String destinationPath;
+  final Uri sourcePath;
+  final Uri destinationPath;
 
   /// The name of the operating system to know
   /// which command to use.
@@ -35,13 +36,16 @@ class CopyInstruction implements Instruction<CopyInstruction> {
 
   @override
   Future<void> execute() async {
-    if (sourcePath.endsWith(Platform.pathSeparator)) {
-      copyPath(sourcePath, destinationPath);
+    String source = sourcePath.toFilePath();
+    String destination = destinationPath.toFilePath();
+
+    if (source.endsWith(Platform.pathSeparator)) {
+      copyPath(source, source);
       return;
     }
 
-    File file = File(sourcePath);
-    file.copy(destinationPath);
+    File file = File(source);
+    file.copy(destination);
   }
 
   @override
@@ -51,23 +55,26 @@ class CopyInstruction implements Instruction<CopyInstruction> {
   String get name => "Copy";
 
   @override
-  List<String> get arguments => [sourcePath, destinationPath];
+  List<String> get arguments => [
+        sourcePath.toFilePath(windows: false),
+        destinationPath.toFilePath(windows: false),
+      ];
 
   @override
   String get executeMessage => "Copying $sourcePath into $destinationPath...";
 
   @override
   String toString() {
-    return "Copy (sourcePath: $sourcePath,"
-        " destinationPath: $destinationPath)";
+    return "Copy (sourcePath: ${sourcePath.toFilePath()},"
+        " destinationPath: ${destinationPath.toFilePath()})";
   }
 
   @override
   CopyInstruction create(UuidValue? id, List<String> arguments) {
     return CopyInstruction(
       id: id,
-      sourcePath: arguments[0],
-      destinationPath: arguments[1],
+      sourcePath: Uri.file(arguments[0]),
+      destinationPath: Uri.file(arguments[1]),
       os: os,
     );
   }

@@ -10,6 +10,7 @@ import 'package:releaser/router/release_command.dart';
 import 'package:releaser/software/software.dart';
 import 'package:releaser/software/software_service.dart';
 import 'package:test/test.dart';
+import 'package:path/path.dart' as path;
 
 import 'menu_router_test.mocks.dart';
 
@@ -60,8 +61,8 @@ void main() {
   test("add-software should add a software", () {
     Software software = Software(
       name: "test",
-      rootPath: "/home/software/root",
-      releasePath: "/home/software/dest",
+      rootPath: Uri.directory("/home/software/root"),
+      releasePath: Uri.directory("/home/software/dest"),
       releaseInstructions: [],
     );
 
@@ -71,9 +72,9 @@ void main() {
       '--name',
       software.name,
       '--root',
-      software.rootPath,
+      path.fromUri(software.rootPath),
       '--dest',
-      software.releasePath,
+      path.fromUri(software.releasePath),
     ]);
     verify(addSoftwareCommand.run()).called(1);
   });

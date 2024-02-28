@@ -4,26 +4,28 @@ import 'package:archive/archive_io.dart';
 import 'package:releaser/instruction/instruction.dart';
 import 'package:uuid/uuid.dart';
 
+import 'package:path/path.dart' as path;
+
 /// Currently only directories are supported, so it's necessary
 /// that the source path ends with a path separator.
 class ZipInstruction implements Instruction<ZipInstruction> {
   final UuidValue? _id;
   final ZipFileEncoder zipFileEncoder;
 
-  final String sourcePath;
-  final String destinationPath;
+  final Directory sourceDirectory;
+  final Uri destinationPath;
 
   ZipInstruction({
     UuidValue? id,
     required this.zipFileEncoder,
-    required this.sourcePath,
+    required this.sourceDirectory,
     required this.destinationPath,
   }) : _id = id;
 
   @override
   Future<void> execute() async {
-    Directory sourceDirectory = Directory(sourcePath);
-    zipFileEncoder.zipDirectory(sourceDirectory, filename: destinationPath);
+    zipFileEncoder.zipDirectory(sourceDirectory,
+        filename: path.fromUri(destinationPath));
   }
 
   @override
@@ -33,15 +35,19 @@ class ZipInstruction implements Instruction<ZipInstruction> {
   String get name => "Zip";
 
   @override
-  List<String> get arguments => [sourcePath, destinationPath];
+  List<String> get arguments => [
+        sourceDirectory.path,
+        destinationPath.toFilePath(windows: false),
+      ];
 
   @override
-  String get executeMessage => "Zipping $sourcePath into $destinationPath...";
+  String get executeMessage =>
+      "Zipping $sourceDirectory into $destinationPath...";
 
   @override
   String toString() {
-    return "Zip (sourcePath: $sourcePath,"
-        " destinationPath: $destinationPath)";
+    return "Zip (sourcePath: ${sourceDirectory.path},"
+        " destinationPath: ${destinationPath.path})";
   }
 
   @override
@@ -49,8 +55,8 @@ class ZipInstruction implements Instruction<ZipInstruction> {
     return ZipInstruction(
       id: id,
       zipFileEncoder: zipFileEncoder,
-      sourcePath: arguments[0],
-      destinationPath: arguments[1],
+      sourceDirectory: Directory(arguments[0]),
+      destinationPath: Uri.file(arguments[1]),
     );
   }
 }

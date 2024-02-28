@@ -36,8 +36,8 @@ void main() {
 
   List<Instruction> instructions = [
     CopyInstruction(
-      sourcePath: "build/path",
-      destinationPath: "dest/path",
+      sourcePath: Uri.file("build/path", windows: Platform.isWindows),
+      destinationPath: Uri.file("dest/path", windows: Platform.isWindows),
       os: "macos",
     ),
   ];
@@ -55,22 +55,22 @@ void main() {
 
   // How software are stored in the csv file.
   List<String> softwareFileLines = [
-    "${softwareIds[0]},software1,root1,release1",
-    "${softwareIds[1]},software2,root2,release2"
+    "${softwareIds[0]},software1,root1/,release1/",
+    "${softwareIds[1]},software2,root2/,release2/"
   ];
 
   List<Software> software = [
     Software(
       id: softwareIds[0],
       name: "software1",
-      rootPath: "root1",
-      releasePath: "release1",
+      rootPath: Uri.directory("root1", windows: Platform.isWindows),
+      releasePath: Uri.directory("release1", windows: Platform.isWindows),
       releaseInstructions: instructions,
     ),
     Software( // Does not have an id, represents a new software
       name: "software2",
-      rootPath: "root2",
-      releasePath: "release2",
+      rootPath: Uri.directory("root2", windows: Platform.isWindows),
+      releasePath: Uri.directory("release2", windows: Platform.isWindows),
       releaseInstructions: instructions,
     ),
   ];

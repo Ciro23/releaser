@@ -40,10 +40,13 @@ class AddSoftwareCommand extends Command<void> {
 
   @override
   Future<void> run() async {
+    Uri rootPath = Uri.directory(argResults?['root']!);
+    Uri destPath = Uri.directory(argResults?['dest']!);
+
     Software software = Software(
       name: argResults?['name'],
-      rootPath: argResults?['root'],
-      releasePath: argResults?['dest'],
+      rootPath: rootPath,
+      releasePath: destPath,
       releaseInstructions: [],
     );
     await _softwareService.save(software);

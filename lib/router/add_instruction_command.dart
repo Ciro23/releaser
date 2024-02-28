@@ -80,8 +80,8 @@ class AddInstructionCommand extends Command<void> {
     String? destinationPath = stdin.readLineSync();
 
     return CopyInstruction(
-      sourcePath: sourcePath!,
-      destinationPath: destinationPath!,
+      sourcePath: Uri.file(sourcePath!),
+      destinationPath: Uri.file(destinationPath!),
       os: Platform.operatingSystem,
     );
   }
@@ -95,8 +95,8 @@ class AddInstructionCommand extends Command<void> {
 
     return ZipInstruction(
       zipFileEncoder: _zipFileEncoder,
-      sourcePath: sourcePath!,
-      destinationPath: destinationPath!,
+      sourceDirectory: Directory(sourcePath!),
+      destinationPath: Uri.file(destinationPath!),
     );
   }
 }

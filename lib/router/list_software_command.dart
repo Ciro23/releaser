@@ -22,8 +22,8 @@ class ListSoftwareCommand extends Command<void> {
     List<Software> softwareList = await _softwareService.findAll();
     for (var element in softwareList) {
       onPrint("Name: ${element.name}");
-      onPrint("Root Path: ${element.rootPath}");
-      onPrint("Release Path: ${element.releasePath}");
+      onPrint("Root Path: ${element.rootPath.toFilePath()}");
+      onPrint("Release Path: ${element.releasePath.toFilePath()}");
       onPrint("Instructions:");
       for (var instruction in element.releaseInstructions) {
         onPrint("  $instruction");
