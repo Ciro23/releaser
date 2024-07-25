@@ -12,10 +12,10 @@ class ListSoftwareCommand extends Command<void> {
   ListSoftwareCommand(this._softwareService, this.onPrint);
 
   @override
-  String get name => "list-software";
+  String get name => "list";
 
   @override
-  String get description => "Show a list of all saved software";
+  String get description => "Show the list of all software managed by releaser";
 
   @override
   void run() async {

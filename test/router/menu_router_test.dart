@@ -79,9 +79,9 @@ void main() {
     verify(addSoftwareCommand.run()).called(1);
   });
 
-  test("list-software should list software", () {
+  test("list should list software", () {
     when(softwareService.findAll()).thenAnswer((_) async => []);
-    menuRouter.runSelectedAction(['list-software']);
+    menuRouter.runSelectedAction(['list']);
     verify(listSoftwareCommand.run()).called(1);
   });
 }

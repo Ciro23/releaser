@@ -13,12 +13,6 @@ migrate_working_dir/
 # Test coverage
 coverage
 
-# Generated classes
-*.g.dart
-
-# Generated mocks
-*.mocks.dart
-
 # IntelliJ related
 *.iml
 *.ipr
