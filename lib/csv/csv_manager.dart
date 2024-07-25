@@ -80,7 +80,7 @@ class CsvManager<T extends Equatable> implements FileManager<T> {
   /// a list of all object attributes for each object.
   List<List<dynamic>> _readCsv() {
     var csvContent = _getFileContent();
-    return _csvToListConverter.convert(csvContent);
+    return _csvToListConverter.convert(csvContent, eol: Platform.lineTerminator);
   }
 
   /// Returns the raw content of the [_csvFile].
