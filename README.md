@@ -32,7 +32,7 @@ to at runtime.
 ### Listing all software
 To list all the saved software, along all their details and release instructions, use:
 ```
-releaser list-software
+releaser list
 ```
 
 ### Releasing

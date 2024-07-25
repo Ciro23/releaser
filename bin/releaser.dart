@@ -53,7 +53,7 @@ void main(List<String> arguments) {
   SoftwareService softwareService = SoftwareCsvService(softwareRepository);
 
   CommandRunner<void> commandRunner = CommandRunner(
-    "Releaser",
+    "releaser",
     "Manage your software releases",
   );
   onPrint(Object? message) {

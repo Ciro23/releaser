@@ -26,8 +26,8 @@ class ReleaseCommand extends Command<void> {
   String get name => "release";
 
   @override
-  String get description => "Execute the release process, involving all"
-      " associated instructions.";
+  String get description => "Execute the release process of a software,"
+      " involving all associated instructions.";
 
   @override
   Future<void> run() async {

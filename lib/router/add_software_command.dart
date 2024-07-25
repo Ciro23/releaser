@@ -14,7 +14,7 @@ class AddSoftwareCommand extends Command<void> {
   String get name => "add-software";
 
   @override
-  String get description => "Save a software";
+  String get description => "Add a software to the managed ones by releaser";
 
   AddSoftwareCommand(this._softwareService, this.onPrint) {
     argParser
@@ -34,7 +34,7 @@ class AddSoftwareCommand extends Command<void> {
         'dest',
         abbr: 'd',
         mandatory: true,
-        help: 'The destination path of the software',
+        help: 'The destination path of the released software',
       );
   }
 

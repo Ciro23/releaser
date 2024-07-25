@@ -42,7 +42,7 @@ class AddInstructionCommand extends Command<void> {
   String get name => "add-instruction";
 
   @override
-  String get description => "Add a release instruction";
+  String get description => "Add a release instruction to an existing software";
 
   @override
   Future<void> run() async {
