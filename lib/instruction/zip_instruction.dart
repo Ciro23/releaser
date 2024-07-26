@@ -37,17 +37,17 @@ class ZipInstruction implements Instruction<ZipInstruction> {
   @override
   List<String> get arguments => [
         sourceDirectory.path,
-        destinationPath.toFilePath(windows: false),
+        destinationPath.toFilePath(windows: Platform.isWindows),
       ];
 
   @override
   String get executeMessage =>
-      "Zipping $sourceDirectory into $destinationPath...";
+      "Zipping $sourceDirectory into $destinationPath";
 
   @override
   String toString() {
-    return "Zip (sourcePath: ${sourceDirectory.path},"
-        " destinationPath: ${destinationPath.path})";
+    return "Zip (source path: ${sourceDirectory.path},"
+        " destination path: ${destinationPath.path})";
   }
 
   @override

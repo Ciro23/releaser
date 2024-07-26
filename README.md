@@ -24,7 +24,7 @@ the standard input.
 All instruction arguments can contain placeholders: specifically, the following ones are available:
 - `${name}`
 - `${root_path}`
-- `${release_path}`
+- `${dest_path}`
 
 All placeholders are replaced with the actual values of the software which the instructions belong
 to at runtime.
