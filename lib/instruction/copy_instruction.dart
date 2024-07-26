@@ -35,10 +35,8 @@ class CopyInstruction implements Instruction<CopyInstruction> {
 
   @override
   Future<void> execute() async {
-    String source = sourcePath.toFilePath(windows: Platform.isWindows);
-    String destination = destinationPath.toFilePath(
-      windows: Platform.isWindows,
-    );
+    String source = sourcePath.toFilePath();
+    String destination = destinationPath.toFilePath();
 
     if (source.endsWith(Platform.pathSeparator)) {
       copyPath(source, destination);
@@ -57,8 +55,8 @@ class CopyInstruction implements Instruction<CopyInstruction> {
 
   @override
   List<String> get arguments => [
-        sourcePath.toFilePath(windows: Platform.isWindows),
-        destinationPath.toFilePath(windows: Platform.isWindows),
+        sourcePath.toFilePath(),
+        destinationPath.toFilePath(),
       ];
 
   @override
@@ -66,12 +64,8 @@ class CopyInstruction implements Instruction<CopyInstruction> {
 
   @override
   String toString() {
-    return "Copy (source path: ${sourcePath.toFilePath(
-      windows: Platform.isWindows,
-    )},"
-        " destination path: ${destinationPath.toFilePath(
-      windows: Platform.isWindows,
-    )})";
+    return "Copy (source path: ${sourcePath.toFilePath()},"
+        " destination path: ${destinationPath.toFilePath()})";
   }
 
   @override

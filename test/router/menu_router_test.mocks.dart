@@ -106,6 +106,21 @@ class MockSoftwareService extends _i1.Mock implements _i5.SoftwareService {
         returnValue: _i6.Future<_i2.Software?>.value(),
         returnValueForMissingStub: _i6.Future<_i2.Software?>.value(),
       ) as _i6.Future<_i2.Software?>);
+
+  @override
+  _i6.Future<_i2.Software?> findByNameForVersion(
+    String? name, {
+    required String? version,
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #findByNameForVersion,
+          [name],
+          {#version: version},
+        ),
+        returnValue: _i6.Future<_i2.Software?>.value(),
+        returnValueForMissingStub: _i6.Future<_i2.Software?>.value(),
+      ) as _i6.Future<_i2.Software?>);
 }
 
 /// A class which mocks [CommandRunner].

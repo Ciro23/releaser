@@ -54,10 +54,8 @@ class AddInstructionCommand extends Command<void> {
       throw ArgumentError("Software '$softwareName' not found");
     }
 
-    String rootPath = software.rootPath.toFilePath(windows: Platform.isWindows);
-    String destPath = software.releasePath.toFilePath(
-      windows: Platform.isWindows,
-    );
+    String rootPath = software.rootPath.toFilePath();
+    String destPath = software.releasePath.toFilePath();
     String hintMessage = "--------------------------------------------"
         "\nAvailable placeholders:"
         "\n- \${name} => '${software.name}'"
