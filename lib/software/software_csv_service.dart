@@ -5,14 +5,6 @@ import 'package:releaser/software/software.dart';
 import 'package:releaser/software/software_repository.dart';
 import 'package:releaser/software/software_service.dart';
 
-/// The service layer handles business logic for handling
-/// the use of "variables".
-/// [Software] attributes can be used dynamically in
-/// [Instruction.arguments], as all paths containing the placeholders
-/// "${name}", "${root_path}" and "${dest_path}" will be parsed
-/// using [Software] attribute values.
-/// E.g. "/home/${name}/${dest_path}" will be parsed at runtime
-/// using actual values.
 class SoftwareCsvService implements SoftwareService {
   final SoftwareRepository _softwareRepository;
 
@@ -39,13 +31,30 @@ class SoftwareCsvService implements SoftwareService {
         );
   }
 
-  Software _parseSoftware(Software software) {
+  @override
+  Future<Software?> findByNameForVersion(String name,
+      {required String version}) {
+    return _softwareRepository.findByName(name).then(
+          (value) => value == null
+              ? null
+              : _parseSoftware(
+                  value,
+                  version: version,
+                ),
+        );
+  }
+
+  Software _parseSoftware(Software software, {String? version}) {
     List<Instruction> parsedInstructions = [];
     for (Instruction instruction in software.releaseInstructions) {
       List<String> parsedArguments = [];
 
       for (String argument in instruction.arguments) {
-        String parsedArgument = _parseVariables(argument, software);
+        String parsedArgument = _parseVariables(
+          argument,
+          software,
+          version: version,
+        );
         parsedArguments.add(parsedArgument);
       }
 
@@ -65,7 +74,11 @@ class SoftwareCsvService implements SoftwareService {
     );
   }
 
-  String _parseVariables(String text, Software software) {
+  String _parseVariables(
+    String text,
+    Software software, {
+    String? version,
+  }) {
     String rootPath = software.rootPath.toFilePath(
       windows: Platform.isWindows,
     );
@@ -73,9 +86,14 @@ class SoftwareCsvService implements SoftwareService {
       windows: Platform.isWindows,
     );
 
-    return text
+    String parsedVariables = text
         .replaceAll(r'${name}', software.name)
         .replaceAll(r'${root_path}', rootPath)
         .replaceAll(r'${dest_path}', releasePath);
+
+    if (version != null) {
+      return parsedVariables.replaceAll(r'${version}', version);
+    }
+    return parsedVariables;
   }
 }

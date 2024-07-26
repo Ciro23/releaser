@@ -75,13 +75,12 @@ void main(List<String> arguments) {
   ReleaseCommand releaseCommand = ReleaseCommand(
     softwareService: softwareService,
   );
-  MenuRouter menuRouter = MenuRouter(
-    commandRunner: commandRunner,
-    addSoftwareCommand: addSoftwareCommand,
-    listSoftwareCommand: listSoftwareCommand,
-    addInstructionCommand: addInstructionCommand,
-    releaseCommand: releaseCommand,
-  );
+  commandRunner.addCommand(addSoftwareCommand);
+  commandRunner.addCommand(listSoftwareCommand);
+  commandRunner.addCommand(addInstructionCommand);
+  commandRunner.addCommand(releaseCommand);
+
+  MenuRouter menuRouter = MenuRouter(commandRunner: commandRunner);
 
   menuRouter.runSelectedAction(arguments).catchError((error) {
     if (error is ArgumentError) {
@@ -91,8 +90,7 @@ void main(List<String> arguments) {
           "\nUse --help for more information.");
     } else {
       stderr.writeln("An error as occurred: $error"
-          " ${error.stackTrace}"
-      );
+          " ${error.stackTrace}");
     }
   });
 }

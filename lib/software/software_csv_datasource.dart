@@ -9,7 +9,6 @@ import 'package:releaser/software/software_csv.dart';
 import 'package:releaser/software/software_repository.dart';
 
 import 'package:uuid/uuid.dart';
-import 'package:path/path.dart' as path;
 
 import '../instruction/copy_instruction.dart';
 import '../instruction/instruction.dart';

@@ -49,12 +49,13 @@ void main() {
 
   setUp(() {
     commandRunner = CommandRunner("test", "test");
+    commandRunner.addCommand(addSoftwareCommand);
+    commandRunner.addCommand(listSoftwareCommand);
+    commandRunner.addCommand(addInstructionCommand);
+    commandRunner.addCommand(releaseCommand);
+
     menuRouter = MenuRouter(
       commandRunner: commandRunner,
-      addSoftwareCommand: addSoftwareCommand,
-      listSoftwareCommand: listSoftwareCommand,
-      addInstructionCommand: addInstructionCommand,
-      releaseCommand: releaseCommand,
     );
   });
 
