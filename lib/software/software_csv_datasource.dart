@@ -77,8 +77,8 @@ class SoftwareCsvDataSource implements SoftwareRepository {
     SoftwareCsv savedSoftware = SoftwareCsv(
       id: id,
       name: software.name,
-      rootPath: software.rootPath.toFilePath(windows: Platform.isWindows),
-      releasePath: software.releasePath.toFilePath(windows: Platform.isWindows),
+      rootPath: software.rootPath.toFilePath(),
+      releasePath: software.releasePath.toFilePath(),
     );
 
     _softwareCsvManager.appendObject(savedSoftware);

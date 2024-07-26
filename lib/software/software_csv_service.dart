@@ -1,4 +1,3 @@
-import 'dart:io';
 
 import 'package:releaser/instruction/instruction.dart';
 import 'package:releaser/software/software.dart';
@@ -25,7 +24,7 @@ class SoftwareCsvService implements SoftwareService {
   }
 
   @override
-  Future<Software?> findByName(String name) async {
+  Future<Software?> findByName(String name) {
     return _softwareRepository.findByName(name).then(
           (value) => value == null ? null : _parseSoftware(value),
         );
@@ -79,12 +78,8 @@ class SoftwareCsvService implements SoftwareService {
     Software software, {
     String? version,
   }) {
-    String rootPath = software.rootPath.toFilePath(
-      windows: Platform.isWindows,
-    );
-    String releasePath = software.releasePath.toFilePath(
-      windows: Platform.isWindows,
-    );
+    String rootPath = software.rootPath.toFilePath();
+    String releasePath = software.releasePath.toFilePath();
 
     String parsedVariables = text
         .replaceAll(r'${name}', software.name)

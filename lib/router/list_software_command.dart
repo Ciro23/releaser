@@ -1,4 +1,3 @@
-import 'dart:io';
 
 import 'package:args/command_runner.dart';
 import 'package:releaser/software/software_service.dart';
@@ -24,12 +23,8 @@ class ListSoftwareCommand extends Command<void> {
     List<Software> softwareList = await _softwareService.findAll();
     for (var element in softwareList) {
       onPrint("Name: ${element.name}");
-      onPrint("Root Path: ${element.rootPath.toFilePath(
-        windows: Platform.isWindows,
-      )}");
-      onPrint("Release Path: ${element.releasePath.toFilePath(
-        windows: Platform.isWindows,
-      )}");
+      onPrint("Root Path: ${element.rootPath.toFilePath()}");
+      onPrint("Release Path: ${element.releasePath.toFilePath()}");
       onPrint("Instructions:");
       for (var instruction in element.releaseInstructions) {
         onPrint("  $instruction");

@@ -37,7 +37,7 @@ class ZipInstruction implements Instruction<ZipInstruction> {
   @override
   List<String> get arguments => [
         sourceDirectory.path,
-        destinationPath.toFilePath(windows: Platform.isWindows),
+        destinationPath.toFilePath(),
       ];
 
   @override
@@ -47,7 +47,7 @@ class ZipInstruction implements Instruction<ZipInstruction> {
   @override
   String toString() {
     return "Zip (source path: ${sourceDirectory.path},"
-        " destination path: ${destinationPath.path})";
+        " destination path: ${destinationPath.toFilePath()})";
   }
 
   @override
@@ -56,7 +56,7 @@ class ZipInstruction implements Instruction<ZipInstruction> {
       id: id,
       zipFileEncoder: zipFileEncoder,
       sourceDirectory: Directory(arguments[0]),
-      destinationPath: Uri.file(arguments[1]),
+      destinationPath: Uri(path: arguments[1]),
     );
   }
 }
