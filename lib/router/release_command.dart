@@ -14,11 +14,17 @@ class ReleaseCommand extends Command<void> {
     required SoftwareService softwareService,
   }) : _softwareService = softwareService {
     argParser
-      .addOption(
+      ..addOption(
         'software',
         abbr: 's',
         mandatory: true,
         help: 'The name of the software which the instruction will be added to',
+      )
+      ..addOption(
+        'version',
+        abbr: 'v',
+        mandatory: true,
+        help: 'The version to be assigned to the release',
       );
   }
 
@@ -32,8 +38,12 @@ class ReleaseCommand extends Command<void> {
   @override
   Future<void> run() async {
     String softwareName = argResults?['software'];
+    String version = argResults?['version'];
 
-    Software? software = await _softwareService.findByName(softwareName);
+    Software? software = await _softwareService.findByNameForVersion(
+      softwareName,
+      version: version,
+    );
     if (software == null) {
       throw ArgumentError("Software '$softwareName' not found");
     }

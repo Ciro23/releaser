@@ -60,9 +60,10 @@ class AddInstructionCommand extends Command<void> {
     );
     String hintMessage = "--------------------------------------------"
         "\nAvailable placeholders:"
-        "\n- \${name} => ${software.name}"
-        "\n- \${root_path} => $rootPath"
-        "\n- \${dest_path} => $destPath"
+        "\n- \${name} => '${software.name}'"
+        "\n- \${root_path} => '$rootPath'"
+        "\n- \${dest_path} => '$destPath'"
+        "\n- \${version} => the specified version during release"
         "\n--------------------------------------------";
 
     Instruction instruction;
