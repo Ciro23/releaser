@@ -9,9 +9,9 @@ import 'package:releaser/software/software_service.dart';
 /// the use of "variables".
 /// [Software] attributes can be used dynamically in
 /// [Instruction.arguments], as all paths containing the placeholders
-/// "${name}", "${root_path}" and "${release_path}" will be parsed
+/// "${name}", "${root_path}" and "${dest_path}" will be parsed
 /// using [Software] attribute values.
-/// E.g. "/home/${name}/${release_path}" will be parsed at runtime
+/// E.g. "/home/${name}/${dest_path}" will be parsed at runtime
 /// using actual values.
 class SoftwareCsvService implements SoftwareService {
   final SoftwareRepository _softwareRepository;
@@ -76,6 +76,6 @@ class SoftwareCsvService implements SoftwareService {
     return text
         .replaceAll(r'${name}', software.name)
         .replaceAll(r'${root_path}', rootPath)
-        .replaceAll(r'${release_path}', releasePath);
+        .replaceAll(r'${dest_path}', releasePath);
   }
 }

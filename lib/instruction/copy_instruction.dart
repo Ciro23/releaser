@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:io/io.dart';
 import 'package:uuid/uuid.dart';
-import 'package:path/path.dart' as path;
 
 import 'instruction.dart';
 
@@ -36,11 +35,13 @@ class CopyInstruction implements Instruction<CopyInstruction> {
 
   @override
   Future<void> execute() async {
-    String source = sourcePath.toFilePath();
-    String destination = destinationPath.toFilePath();
+    String source = sourcePath.toFilePath(windows: Platform.isWindows);
+    String destination = destinationPath.toFilePath(
+      windows: Platform.isWindows,
+    );
 
     if (source.endsWith(Platform.pathSeparator)) {
-      copyPath(source, source);
+      copyPath(source, destination);
       return;
     }
 
@@ -56,17 +57,21 @@ class CopyInstruction implements Instruction<CopyInstruction> {
 
   @override
   List<String> get arguments => [
-        sourcePath.toFilePath(windows: false),
-        destinationPath.toFilePath(windows: false),
+        sourcePath.toFilePath(windows: Platform.isWindows),
+        destinationPath.toFilePath(windows: Platform.isWindows),
       ];
 
   @override
-  String get executeMessage => "Copying $sourcePath into $destinationPath...";
+  String get executeMessage => "Copying $sourcePath into $destinationPath";
 
   @override
   String toString() {
-    return "Copy (sourcePath: ${sourcePath.toFilePath()},"
-        " destinationPath: ${destinationPath.toFilePath()})";
+    return "Copy (source path: ${sourcePath.toFilePath(
+      windows: Platform.isWindows,
+    )},"
+        " destination path: ${destinationPath.toFilePath(
+      windows: Platform.isWindows,
+    )})";
   }
 
   @override

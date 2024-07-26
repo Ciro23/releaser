@@ -54,14 +54,25 @@ class AddInstructionCommand extends Command<void> {
       throw ArgumentError("Software '$softwareName' not found");
     }
 
+    String rootPath = software.rootPath.toFilePath(windows: Platform.isWindows);
+    String destPath = software.releasePath.toFilePath(
+      windows: Platform.isWindows,
+    );
+    String hintMessage = "--------------------------------------------"
+        "\nAvailable placeholders:"
+        "\n- \${name} => ${software.name}"
+        "\n- \${root_path} => $rootPath"
+        "\n- \${dest_path} => $destPath"
+        "\n--------------------------------------------";
+
     Instruction instruction;
     switch (instructionName.toLowerCase()) {
       case "copy":
-        instruction = buildCopyInstruction();
+        instruction = buildCopyInstruction(hintMessage);
         break;
 
       case "zip":
-        instruction = buildZipInstruction();
+        instruction = buildZipInstruction(hintMessage);
         break;
 
       default:
@@ -72,7 +83,8 @@ class AddInstructionCommand extends Command<void> {
     await _softwareService.save(software);
   }
 
-  Instruction buildCopyInstruction() {
+  Instruction buildCopyInstruction(String hintMessage) {
+    stdout.writeln(hintMessage);
     stdout.writeln("Enter the source path:");
     String? sourcePath = stdin.readLineSync();
 
@@ -86,7 +98,8 @@ class AddInstructionCommand extends Command<void> {
     );
   }
 
-  Instruction buildZipInstruction() {
+  Instruction buildZipInstruction(String hintMessage) {
+    stdout.writeln(hintMessage);
     stdout.writeln("Enter the source path:");
     String? sourcePath = stdin.readLineSync();
 
