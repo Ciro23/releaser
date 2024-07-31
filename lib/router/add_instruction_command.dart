@@ -4,7 +4,7 @@ import 'package:archive/archive_io.dart';
 import 'package:args/command_runner.dart';
 import 'package:releaser/instruction/copy_instruction.dart';
 import 'package:releaser/instruction/zip_instruction.dart';
-import 'package:releaser/software/software_service.dart';
+import 'package:releaser/software/software_repository.dart';
 
 import '../instruction/instruction.dart';
 import '../software/software.dart';
@@ -12,16 +12,20 @@ import '../software/software.dart';
 /// Add a release instruction to a software.
 /// Instructions may require different parameters, so
 /// all implementation details are collected in a second
-/// moment using the standard input.
-/// TODO: needs refactoring.
+/// moment using [onInput].
 class AddInstructionCommand extends Command<void> {
-  final SoftwareService _softwareService;
+  final SoftwareRepository _softwareRepository;
   final ZipFileEncoder _zipFileEncoder;
 
+  final void Function(Object?) onPrint;
+  final String? Function() onInput;
+
   AddInstructionCommand({
-    required SoftwareService softwareService,
+    required SoftwareRepository softwareRepository,
     required ZipFileEncoder zipFileEncoder,
-  })  : _softwareService = softwareService,
+    required this.onPrint,
+    required this.onInput,
+  })  : _softwareRepository = softwareRepository,
         _zipFileEncoder = zipFileEncoder {
     argParser
       ..addOption(
@@ -49,7 +53,7 @@ class AddInstructionCommand extends Command<void> {
     String instructionName = argResults?['name'];
     String softwareName = argResults?['software'];
 
-    Software? software = await _softwareService.findByName(softwareName);
+    Software? software = await _softwareRepository.findByName(softwareName);
     if (software == null) {
       throw ArgumentError("Software '$softwareName' not found");
     }
@@ -67,11 +71,11 @@ class AddInstructionCommand extends Command<void> {
     Instruction instruction;
     switch (instructionName.toLowerCase()) {
       case "copy":
-        instruction = buildCopyInstruction(hintMessage);
+        instruction = _buildCopyInstruction(hintMessage);
         break;
 
       case "zip":
-        instruction = buildZipInstruction(hintMessage);
+        instruction = _buildZipInstruction(hintMessage);
         break;
 
       default:
@@ -79,16 +83,16 @@ class AddInstructionCommand extends Command<void> {
     }
 
     software.addInstruction(instruction);
-    await _softwareService.save(software);
+    await _softwareRepository.save(software);
   }
 
-  Instruction buildCopyInstruction(String hintMessage) {
-    stdout.writeln(hintMessage);
-    stdout.writeln("Enter the source path:");
-    String? sourcePath = stdin.readLineSync();
+  Instruction _buildCopyInstruction(String hintMessage) {
+    onPrint(hintMessage);
+    onPrint("Enter the source path:");
+    String? sourcePath = onInput();
 
-    stdout.writeln("Enter the destination path:");
-    String? destinationPath = stdin.readLineSync();
+    onPrint("Enter the destination path:");
+    String? destinationPath = onInput();
 
     return CopyInstruction(
       sourcePath: Uri.file(sourcePath!),
@@ -97,13 +101,13 @@ class AddInstructionCommand extends Command<void> {
     );
   }
 
-  Instruction buildZipInstruction(String hintMessage) {
-    stdout.writeln(hintMessage);
-    stdout.writeln("Enter the source path:");
-    String? sourcePath = stdin.readLineSync();
+  Instruction _buildZipInstruction(String hintMessage) {
+    onPrint(hintMessage);
+    onPrint("Enter the source path:");
+    String? sourcePath = onInput();
 
-    stdout.writeln("Enter the destination path:");
-    String? destinationPath = stdin.readLineSync();
+    onPrint("Enter the destination path:");
+    String? destinationPath = onInput();
 
     return ZipInstruction(
       zipFileEncoder: _zipFileEncoder,

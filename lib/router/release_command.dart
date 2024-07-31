@@ -1,18 +1,19 @@
 import 'dart:io';
 
 import 'package:args/command_runner.dart';
-import 'package:releaser/software/software_service.dart';
+import 'package:releaser/software/software_repository.dart';
 
+import '../instruction/instruction.dart';
 import '../software/software.dart';
 
 /// Starts the execution of all the release instructions for
 /// the specified software.
 class ReleaseCommand extends Command<void> {
-  final SoftwareService _softwareService;
+  final SoftwareRepository _softwareRepository;
 
   ReleaseCommand({
-    required SoftwareService softwareService,
-  }) : _softwareService = softwareService {
+    required SoftwareRepository softwareRepository,
+  }) : _softwareRepository = softwareRepository {
     argParser
       ..addOption(
         'software',
@@ -40,17 +41,68 @@ class ReleaseCommand extends Command<void> {
     String softwareName = argResults?['software'];
     String version = argResults?['version'];
 
-    Software? software = await _softwareService.findByNameForVersion(
-      softwareName,
-      version: version,
-    );
+    Software? software = await _softwareRepository.findByName(softwareName);
     if (software == null) {
       throw ArgumentError("Software '$softwareName' not found");
     }
 
-    for (final instruction in software.releaseInstructions) {
+    Software parsedSoftware = _parseInstructions(software, version: version);
+    for (final instruction in parsedSoftware.releaseInstructions) {
       stdout.writeln(instruction.executeMessage);
       await instruction.execute();
     }
+  }
+
+  /// Only variables inside instructions are parsed.
+  /// Variables inside the software object are used as reference,
+  /// as they're not being directly used, if not through its
+  /// instructions.
+  Software _parseInstructions(Software software, {String? version}) {
+    List<Instruction> parsedInstructions = [];
+    for (Instruction instruction in software.releaseInstructions) {
+      List<String> parsedArguments = [];
+
+      for (String argument in instruction.arguments) {
+        String parsedArgument = _parseVariables(
+          argument,
+          software,
+          version: version,
+        );
+        parsedArguments.add(parsedArgument);
+      }
+
+      Instruction parsedInstruction = instruction.create(
+        instruction.id,
+        parsedArguments,
+      );
+      parsedInstructions.add(parsedInstruction);
+    }
+
+    return Software(
+      id: software.id,
+      name: software.name,
+      rootPath: software.rootPath,
+      releasePath: software.releasePath,
+      releaseInstructions: parsedInstructions,
+    );
+  }
+
+  String _parseVariables(
+    String text,
+    Software software, {
+    String? version,
+  }) {
+    String rootPath = software.rootPath.toFilePath();
+    String releasePath = software.releasePath.toFilePath();
+
+    String parsedVariables = text
+        .replaceAll(r'${root_path}', rootPath)
+        .replaceAll(r'${dest_path}', releasePath)
+        .replaceAll(r'${name}', software.name);
+
+    if (version != null) {
+      return parsedVariables.replaceAll(r'${version}', version);
+    }
+    return parsedVariables;
   }
 }

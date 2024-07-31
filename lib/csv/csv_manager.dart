@@ -5,7 +5,6 @@ import 'package:equatable/equatable.dart';
 
 import 'file_manager.dart';
 
-
 /// Stores and retrieves objects using a CSV file.
 class CsvManager<T extends Equatable> implements FileManager<T> {
   /// All software data is stored in this file.
@@ -71,8 +70,10 @@ class CsvManager<T extends Equatable> implements FileManager<T> {
   }
 
   String _serializeObjects(List<T> objects) {
-    List<List<Object?>> propertiesOfObjects = objects.map((e) => e.props).toList();
-    String csvContent = _listToCsvConverter.convert(propertiesOfObjects) + Platform.lineTerminator;
+    List<List<Object?>> propertiesOfObjects =
+        objects.map((e) => e.props).toList();
+    String csvContent = _listToCsvConverter.convert(propertiesOfObjects) +
+        Platform.lineTerminator;
     return csvContent;
   }
 
@@ -80,7 +81,10 @@ class CsvManager<T extends Equatable> implements FileManager<T> {
   /// a list of all object attributes for each object.
   List<List<dynamic>> _readCsv() {
     var csvContent = _getFileContent();
-    return _csvToListConverter.convert(csvContent, eol: Platform.lineTerminator);
+    return _csvToListConverter.convert(
+      csvContent,
+      eol: Platform.lineTerminator,
+    );
   }
 
   /// Returns the raw content of the [_csvFile].

@@ -1,9 +1,9 @@
-
 import 'package:equatable/equatable.dart';
 import 'package:uuid/uuid.dart';
 
 import '../instruction/instruction.dart';
 
+/// The main entity of Releaser.
 class Software extends Equatable {
   final UuidValue? id;
   final String name;
@@ -27,7 +27,6 @@ class Software extends Equatable {
       releasePath: software.releasePath,
       releaseInstructions: software.releaseInstructions,
     );
-
   }
 
   void addInstruction(Instruction instruction) {

@@ -21,7 +21,9 @@ class InstructionCsvManager extends CsvManager<InstructionCsv> {
     final int instructionArgumentsFirstIndex = 3;
 
     UuidValue id = UuidValue.fromString(csvLine[instructionIdIndex]);
-    UuidValue softwareId = UuidValue.fromString(csvLine[instructionSoftwareIdIndex]);
+    UuidValue softwareId = UuidValue.fromString(
+      csvLine[instructionSoftwareIdIndex],
+    );
     String name = csvLine[instructionNameIndex];
     String arguments = csvLine[instructionArgumentsFirstIndex];
 

@@ -68,6 +68,8 @@ class CopyInstruction implements Instruction<CopyInstruction> {
         " destination path: ${destinationPath.toFilePath()})";
   }
 
+  /// The first element of [arguments] is the path of the source
+  /// directory, while the second is the destination path.
   @override
   CopyInstruction create(UuidValue? id, List<String> arguments) {
     return CopyInstruction(

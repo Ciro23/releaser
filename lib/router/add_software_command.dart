@@ -1,13 +1,13 @@
 import 'package:args/command_runner.dart';
 import 'package:releaser/software/software.dart';
-import 'package:releaser/software/software_service.dart';
+import 'package:releaser/software/software_repository.dart';
 
 import '../paths/paths.dart';
 
 /// Software are required to create and configure
 /// a release.
 class AddSoftwareCommand extends Command<void> {
-  final SoftwareService _softwareService;
+  final SoftwareRepository _softwareRepository;
   final void Function(Object?) onPrint;
 
   @override
@@ -16,7 +16,7 @@ class AddSoftwareCommand extends Command<void> {
   @override
   String get description => "Add a software to the managed ones by releaser";
 
-  AddSoftwareCommand(this._softwareService, this.onPrint) {
+  AddSoftwareCommand(this._softwareRepository, this.onPrint) {
     argParser
       ..addOption(
         'name',
@@ -49,7 +49,7 @@ class AddSoftwareCommand extends Command<void> {
       releasePath: destPath,
       releaseInstructions: [],
     );
-    await _softwareService.save(software);
+    await _softwareRepository.save(software);
 
     onPrint("Software '${software.name}' added successfully"
         " to '${Paths.getSoftwarePath()}'");
