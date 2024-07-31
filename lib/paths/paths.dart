@@ -2,12 +2,9 @@ import 'dart:io';
 
 /// Provides paths useful for application file
 /// handling.
-/// 
 /// All directory paths end with a separator.
-///
 /// All file paths do not end with a separator.
 class Paths {
-
   /// The main folder for all application files.
   static String getReleaserPath() {
     String sep = getSeparator();

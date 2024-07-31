@@ -15,9 +15,7 @@ import 'package:releaser/router/menu_router.dart';
 import 'package:releaser/router/release_command.dart';
 import 'package:releaser/software/software_csv.dart';
 import 'package:releaser/software/software_csv_datasource.dart';
-import 'package:releaser/software/software_csv_service.dart';
 import 'package:releaser/software/software_repository.dart';
-import 'package:releaser/software/software_service.dart';
 import 'package:uuid/uuid.dart';
 
 void main(List<String> arguments) {
@@ -50,7 +48,6 @@ void main(List<String> arguments) {
     instructionCsvManager: instructionCsvManager,
     zipFileEncoder: zipFileEncoder,
   );
-  SoftwareService softwareService = SoftwareCsvService(softwareRepository);
 
   CommandRunner<void> commandRunner = CommandRunner(
     "releaser",
@@ -60,20 +57,26 @@ void main(List<String> arguments) {
     stdout.writeln(message);
   }
 
+  String? onInput() {
+    return stdin.readLineSync();
+  }
+
   AddSoftwareCommand addSoftwareCommand = AddSoftwareCommand(
-    softwareService,
+    softwareRepository,
     onPrint,
   );
   ListSoftwareCommand listSoftwareCommand = ListSoftwareCommand(
-    softwareService,
+    softwareRepository,
     onPrint,
   );
   AddInstructionCommand addInstructionCommand = AddInstructionCommand(
-    softwareService: softwareService,
+    softwareRepository: softwareRepository,
     zipFileEncoder: zipFileEncoder,
+    onPrint: onPrint,
+    onInput: onInput,
   );
   ReleaseCommand releaseCommand = ReleaseCommand(
-    softwareService: softwareService,
+    softwareRepository: softwareRepository,
   );
   commandRunner.addCommand(addSoftwareCommand);
   commandRunner.addCommand(listSoftwareCommand);

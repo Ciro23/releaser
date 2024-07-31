@@ -17,9 +17,9 @@ class SoftwareCsv extends Equatable {
 
   @override
   List<Object?> get props => [
-    id,
-    name,
-    rootPath,
-    releasePath,
-  ];
+        id,
+        name,
+        rootPath,
+        releasePath,
+      ];
 }

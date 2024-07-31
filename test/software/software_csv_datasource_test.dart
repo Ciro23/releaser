@@ -67,7 +67,8 @@ void main() {
       releasePath: Uri.directory("release1", windows: Platform.isWindows),
       releaseInstructions: instructions,
     ),
-    Software( // Does not have an id, represents a new software
+    Software(
+      // Does not have an id, represents a new software
       name: "software2",
       rootPath: Uri.directory("root2", windows: Platform.isWindows),
       releasePath: Uri.directory("release2", windows: Platform.isWindows),
@@ -93,11 +94,13 @@ void main() {
         csvFile: instructionFile,
         csvToListConverter: csvToList,
         listToCsvConverter: listToCsv,
-      ), zipFileEncoder: zipFileEncoder,
+      ),
+      zipFileEncoder: zipFileEncoder,
     );
   });
 
-  test("saving a new software should save both software and"
+  test(
+      "saving a new software should save both software and"
       " its instructions", () async {
     int softwareIndex = 1;
     Software expected = Software(
@@ -130,7 +133,8 @@ void main() {
     expect(actual, expected);
   });
 
-  test("saving an existing software should only save"
+  test(
+      "saving an existing software should only save"
       " its instructions", () async {
     int softwareIndex = 0;
     Software expected = software[softwareIndex];

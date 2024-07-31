@@ -3,7 +3,7 @@ import 'package:releaser/software/software_csv.dart';
 import 'package:uuid/uuid_value.dart';
 
 class SoftwareCsvManager extends CsvManager<SoftwareCsv> {
-    SoftwareCsvManager({
+  SoftwareCsvManager({
     required csvFile,
     required csvToListConverter,
     required listToCsvConverter,

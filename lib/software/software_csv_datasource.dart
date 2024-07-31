@@ -34,10 +34,10 @@ class SoftwareCsvDataSource implements SoftwareRepository {
   @override
   Future<Software> save(Software software) async {
     UuidValue? softwareId = software.id;
-    softwareId ??= saveSoftware(software);
+    softwareId ??= _saveSoftware(software);
 
     if (software.releaseInstructions.isNotEmpty) {
-      saveInstructions(softwareId, software.releaseInstructions);
+      _saveInstructions(softwareId, software.releaseInstructions);
     }
 
     return Software(
@@ -72,7 +72,7 @@ class SoftwareCsvDataSource implements SoftwareRepository {
     return softwareList.where((s) => s.name == name).firstOrNull;
   }
 
-  UuidValue saveSoftware(Software software) {
+  UuidValue _saveSoftware(Software software) {
     UuidValue id = UuidValue.fromString(_uuid.v4());
     SoftwareCsv savedSoftware = SoftwareCsv(
       id: id,
@@ -87,7 +87,7 @@ class SoftwareCsvDataSource implements SoftwareRepository {
 
   /// The [instructions] already without an id are inserted
   /// for the first time, while existing ones are overwritten.
-  void saveInstructions(
+  void _saveInstructions(
     UuidValue softwareId,
     List<Instruction> instructions,
   ) {
@@ -102,10 +102,8 @@ class SoftwareCsvDataSource implements SoftwareRepository {
         .toList();
     if (instructionsToUpdate.isNotEmpty) {
       // TODO: make "update" working.
-      // At the moment the deserialized "variables" inside instruction
-      // arguments cannot be serialized again, after transforming a
-      // InstructionCSV to Instruction.
-
+      // Updating instructions is broken and the order must be
+      // preserved.
       //_instructionCsvManager.deleteObjects(instructionsToUpdate);
       //_instructionCsvManager.appendObjects(instructionsToUpdate);
     }
@@ -113,11 +111,11 @@ class SoftwareCsvDataSource implements SoftwareRepository {
     List<InstructionCsv> instructionsToInsert = instructions
         .where((i) => i.id == null)
         .map((e) => InstructionCsv(
-      id: UuidValue.fromString(_uuid.v4()),
-      softwareId: softwareId,
-      name: e.name,
-      arguments: e.arguments.join(","),
-    ))
+              id: UuidValue.fromString(_uuid.v4()),
+              softwareId: softwareId,
+              name: e.name,
+              arguments: e.arguments.join(","),
+            ))
         .toList();
     if (instructionsToInsert.isNotEmpty) {
       _instructionCsvManager.appendObjects(instructionsToInsert);
