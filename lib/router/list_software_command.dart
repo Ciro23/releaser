@@ -1,6 +1,7 @@
 import 'package:args/command_runner.dart';
 import 'package:releaser/software/software_repository.dart';
 
+import '../instruction/instruction.dart';
 import '../software/software.dart';
 
 /// Lists all saved software along all their details and
@@ -24,11 +25,13 @@ class ListSoftwareCommand extends Command<void> {
       onPrint("Name: ${element.name}");
       onPrint("Root Path: ${element.rootPath.toFilePath()}");
       onPrint("Release Path: ${element.releasePath.toFilePath()}");
-      onPrint("Instructions:");
-      for (var instruction in element.releaseInstructions) {
-        onPrint("  $instruction");
+      onPrint("Instructions: ${element.releaseInstructions.isEmpty ? 'none' : ''}");
+
+      for (int i = 0; i < element.releaseInstructions.length; i++) {
+        Instruction instruction = element.releaseInstructions[i];
+        onPrint("  ${i + 1}. $instruction");
       }
-      onPrint("");
+      onPrint("----------------------------------------");
     }
   }
 }
