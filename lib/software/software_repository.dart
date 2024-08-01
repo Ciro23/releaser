@@ -4,4 +4,5 @@ abstract class SoftwareRepository<T> {
   Future<Software> save(Software software);
   Future<List<Software>> findAll();
   Future<Software?> findByName(String name);
+  Future<bool> delete(Software software);
 }

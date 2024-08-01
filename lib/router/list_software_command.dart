@@ -21,11 +21,18 @@ class ListSoftwareCommand extends Command<void> {
   @override
   void run() async {
     List<Software> softwareList = await _softwareRepository.findAll();
+    if (softwareList.isEmpty) {
+      onPrint("No registered software");
+      onPrint(
+          "  (Use \"releaser add-software\" to register the first software)");
+    }
+
     for (var element in softwareList) {
       onPrint("Name: ${element.name}");
-      onPrint("Root Path: ${element.rootPath.toFilePath()}");
-      onPrint("Release Path: ${element.releasePath.toFilePath()}");
-      onPrint("Instructions: ${element.releaseInstructions.isEmpty ? 'none' : ''}");
+      onPrint("Root path: ${element.rootPath.toFilePath()}");
+      onPrint("Release path: ${element.releasePath.toFilePath()}");
+      onPrint(
+          "Instructions: ${element.releaseInstructions.isEmpty ? 'none' : ''}");
 
       for (int i = 0; i < element.releaseInstructions.length; i++) {
         Instruction instruction = element.releaseInstructions[i];

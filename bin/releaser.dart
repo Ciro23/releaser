@@ -10,6 +10,7 @@ import 'package:releaser/instruction/instruction_csv.dart';
 import 'package:releaser/paths/paths.dart';
 import 'package:releaser/router/add_instruction_command.dart';
 import 'package:releaser/router/add_software_command.dart';
+import 'package:releaser/router/delete_software_command.dart';
 import 'package:releaser/router/list_software_command.dart';
 import 'package:releaser/router/menu_router.dart';
 import 'package:releaser/router/release_command.dart';
@@ -69,6 +70,10 @@ void main(List<String> arguments) {
     softwareRepository,
     onPrint,
   );
+  DeleteSoftwareCommand deleteSoftwareCommand = DeleteSoftwareCommand(
+    softwareRepository,
+    onPrint,
+  );
   AddInstructionCommand addInstructionCommand = AddInstructionCommand(
     softwareRepository: softwareRepository,
     zipFileEncoder: zipFileEncoder,
@@ -80,6 +85,7 @@ void main(List<String> arguments) {
   );
   commandRunner.addCommand(addSoftwareCommand);
   commandRunner.addCommand(listSoftwareCommand);
+  commandRunner.addCommand(deleteSoftwareCommand);
   commandRunner.addCommand(addInstructionCommand);
   commandRunner.addCommand(releaseCommand);
 
