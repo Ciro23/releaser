@@ -49,11 +49,18 @@ class AddSoftwareCommand extends Command<void> {
       releasePath: destPath,
       releaseInstructions: [],
     );
-    await _softwareRepository.save(software);
 
-    onPrint("Software '${software.name}' added successfully"
-        " to '${Paths.getSoftwarePath()}'");
-    onPrint("  (Use \"releaser add-instruction -s ${software.name}\" to create"
-        " the first release instruction)");
+    try {
+      await _softwareRepository.save(software);
+
+      onPrint("Software '${software.name}' added successfully"
+          " to '${Paths.getSoftwarePath()}'");
+      onPrint(
+          "  (Use \"releaser add-instruction -s ${software.name}\" to create"
+          " the first release instruction)");
+    } on StateError catch (e) {
+      onPrint(e);
+      onPrint("  (Use \"releaser list\" to verify existing software)");
+    }
   }
 }
