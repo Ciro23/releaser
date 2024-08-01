@@ -50,7 +50,7 @@ class AddInstructionCommand extends Command<void> {
 
   @override
   Future<void> run() async {
-    String instructionName = argResults?['name'];
+    String instructionName = argResults?['name'].toLowerCase();
     String softwareName = argResults?['software'];
 
     Software? software = await _softwareRepository.findByName(softwareName);
@@ -69,7 +69,7 @@ class AddInstructionCommand extends Command<void> {
         "\n--------------------------------------------";
 
     Instruction instruction;
-    switch (instructionName.toLowerCase()) {
+    switch (instructionName) {
       case "copy":
         instruction = _buildCopyInstruction(hintMessage);
         break;
@@ -84,6 +84,11 @@ class AddInstructionCommand extends Command<void> {
 
     software.addInstruction(instruction);
     await _softwareRepository.save(software);
+
+    onPrint("Instruction '$instructionName' added successfully to software"
+        " '${software.name}");
+    onPrint("  (Use \"releaser release -s ${software.name}\" to execute all"
+        " instruction for this software)");
   }
 
   Instruction _buildCopyInstruction(String hintMessage) {
