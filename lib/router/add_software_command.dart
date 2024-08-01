@@ -53,5 +53,7 @@ class AddSoftwareCommand extends Command<void> {
 
     onPrint("Software '${software.name}' added successfully"
         " to '${Paths.getSoftwarePath()}'");
+    onPrint("  (Use \"releaser add-instruction -s ${software.name}\" to create"
+        " the first release instruction)");
   }
 }
