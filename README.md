@@ -1,8 +1,8 @@
-This is a CLI tool to automate the release process of multiple software.  
-A set of instructions is associated with each software, which the release process provides to execute
-in order.
+This is a CLI tool to manage the release process of multiple software.  
+A set of instructions is associated with each software, which the release process provides to execute in order.
 ## Usage
-Whenever paths are required, paths with an ending slash (or backward slash for Windows) will be considered as directories, or as files without one.
+Whenever paths are required, paths with an ending slash (or backward slash for Windows) will be considered as directories, or as files without one.  
+All data is stored inside CSV files in the directory `.releaser` inside user home.
 ### Adding a software
 The first step is saving a software so instructions can be associated with it.
 ```
@@ -24,7 +24,7 @@ All instruction arguments can contain placeholders: specifically, the following 
 - `${version}`, specified during release
 
 All placeholders are replaced with the actual values of the software which the instructions belong
-to at runtime.
+to at runtime during the release process.
 ### Listing all software
 To list all the saved software, along all their details and release instructions, use:
 ```
@@ -34,6 +34,11 @@ releaser list
 To execute the release process of a software, the following command is used:
 ```
 releaser release --software <software_name> --version <version_string>
+```
+### Deleting a software
+This is pretty straight forward and also deletes all related instructions.
+```
+releaser delete-software <software_name>
 ```
 ### Example
 ```
@@ -77,6 +82,9 @@ releaser list
 ```
 releaser release --software my_software --version 1.0.0
 ```
+## Unsupported actions
+1. Instructions cannot be modified, except directly through CSV files where they're stored.
+2. Instructions are executed in the order they've been added, and it's not possible to update their order.
 ## Building from source
 Generated classes are built using
 ```

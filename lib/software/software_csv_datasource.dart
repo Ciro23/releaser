@@ -93,6 +93,25 @@ class SoftwareCsvDataSource implements SoftwareRepository {
     return id;
   }
 
+  @override
+  Future<bool> delete(Software software) async {
+    SoftwareCsv softwareCsv = SoftwareCsv(
+      id: software.id!,
+      name: software.name,
+      rootPath: software.rootPath.toFilePath(),
+      releasePath: software.releasePath.toFilePath(),
+    );
+    _softwareCsvManager.deleteObject(softwareCsv);
+
+    List<InstructionCsv> instructionsCsv = _instructionsToCsv(
+      software.id!,
+      software.releaseInstructions,
+    );
+    _instructionCsvManager.deleteObjects(instructionsCsv);
+
+    return true;
+  }
+
   /// The [instructions] already without an id are inserted
   /// for the first time, while existing ones are overwritten.
   void _saveInstructions(
@@ -116,15 +135,10 @@ class SoftwareCsvDataSource implements SoftwareRepository {
       //_instructionCsvManager.appendObjects(instructionsToUpdate);
     }
 
-    List<InstructionCsv> instructionsToInsert = instructions
-        .where((i) => i.id == null)
-        .map((e) => InstructionCsv(
-              id: UuidValue.fromString(_uuid.v4()),
-              softwareId: softwareId,
-              name: e.name,
-              arguments: e.arguments.join(","),
-            ))
-        .toList();
+    List<InstructionCsv> instructionsToInsert = _instructionsToCsv(
+      softwareId,
+      instructions.where((i) => i.id == null).toList(),
+    );
     if (instructionsToInsert.isNotEmpty) {
       _instructionCsvManager.appendObjects(instructionsToInsert);
     }
@@ -168,7 +182,23 @@ class SoftwareCsvDataSource implements SoftwareRepository {
       );
     }
 
-    throw UnsupportedError("The instruction ${csv.name} is not supported and"
+    throw UnsupportedError("The instruction '${csv.name}' is not supported and"
         " cannot be deserialized.");
+  }
+
+  List<InstructionCsv> _instructionsToCsv(
+    UuidValue softwareId,
+    List<Instruction> instructions,
+  ) {
+    return instructions
+        .map(
+          (e) => InstructionCsv(
+            id: e.id ?? UuidValue.fromString(_uuid.v4()),
+            softwareId: softwareId,
+            name: e.name,
+            arguments: e.arguments.join(","),
+          ),
+        )
+        .toList();
   }
 }

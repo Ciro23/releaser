@@ -41,8 +41,13 @@ class CsvManager<T extends Equatable> implements FileManager<T> {
 
     List<T> objects = [];
     for (var csvLine in csvLines) {
-      T object = _onBuildObject(csvLine);
-      objects.add(object);
+      // An exception is thrown if the csv line is empty.
+      try {
+        T object = _onBuildObject(csvLine);
+        objects.add(object);
+      } catch (_) {
+        continue;
+      }
     }
 
     return objects;
@@ -72,7 +77,10 @@ class CsvManager<T extends Equatable> implements FileManager<T> {
   String _serializeObjects(List<T> objects) {
     List<List<Object?>> propertiesOfObjects =
         objects.map((e) => e.props).toList();
-    String csvContent = _listToCsvConverter.convert(propertiesOfObjects) +
+    String csvContent = _listToCsvConverter.convert(
+          propertiesOfObjects,
+          eol: Platform.lineTerminator,
+        ) +
         Platform.lineTerminator;
     return csvContent;
   }
