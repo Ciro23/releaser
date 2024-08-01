@@ -93,13 +93,9 @@ void main(List<String> arguments) {
 
   menuRouter.runSelectedAction(arguments).catchError((error) {
     if (error is ArgumentError) {
-      stderr.writeln("Error parsing the command arguments:"
-          " ${error.message}"
-          " ${error.stackTrace}"
-          "\nUse --help for more information.");
+      stderr.writeln("$error\nUse --help for more information.");
     } else {
-      stderr.writeln("An error as occurred: $error"
-          " ${error.stackTrace}");
+      stderr.writeln("An unknown error has occurred: $error");
     }
   });
 }
