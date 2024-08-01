@@ -34,6 +34,14 @@ class SoftwareCsvDataSource implements SoftwareRepository {
   @override
   Future<Software> save(Software software) async {
     UuidValue? softwareId = software.id;
+    if (softwareId == null) {
+      Software? existingSoftware = await findByName(software.name);
+      if (existingSoftware != null) {
+        throw StateError("Software with name '${software.name}' already"
+            " exists");
+      }
+    }
+
     softwareId ??= _saveSoftware(software);
 
     if (software.releaseInstructions.isNotEmpty) {
