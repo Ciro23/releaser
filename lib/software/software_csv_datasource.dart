@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:archive/archive_io.dart';
 import 'package:releaser/csv/file_manager.dart';
 import 'package:releaser/instruction/instruction_csv.dart';
+import 'package:releaser/instruction/shell_instruction.dart';
 import 'package:releaser/instruction/zip_instruction.dart';
 import 'package:releaser/software/software.dart';
 import 'package:releaser/software/software_csv.dart';
@@ -163,12 +164,15 @@ class SoftwareCsvDataSource implements SoftwareRepository {
 
   Instruction _csvToInstruction(InstructionCsv csv) {
     List<String> arguments = csv.arguments.split(",");
+    for (var argument in arguments) {
+      argument.replaceAll('"', '');
+    }
 
     if (csv.name.toLowerCase() == "copy") {
       return CopyInstruction(
         id: csv.id,
-        sourcePath: Uri.file(arguments[0].replaceAll('"', '')),
-        destinationPath: Uri.file(arguments[1].replaceAll('"', '')),
+        sourcePath: Uri.file(arguments[0]),
+        destinationPath: Uri.file(arguments[1]),
         os: Platform.operatingSystem,
       );
     }
@@ -176,9 +180,17 @@ class SoftwareCsvDataSource implements SoftwareRepository {
     if (csv.name.toLowerCase() == "zip") {
       return ZipInstruction(
         id: csv.id,
-        sourceDirectory: Directory(arguments[0].replaceAll('"', '')),
-        destinationPath: Uri.file(arguments[1].replaceAll('"', '')),
+        sourceDirectory: Directory(arguments[0]),
+        destinationPath: Uri.file(arguments[1]),
         zipFileEncoder: _zipFileEncoder,
+      );
+    }
+
+    if (csv.name.toLowerCase() == "shell") {
+      return ShellInstruction(
+        id: csv.id,
+        shellScript: arguments[0],
+        os: Platform.operatingSystem,
       );
     }
 

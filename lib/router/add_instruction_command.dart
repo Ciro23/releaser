@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:archive/archive_io.dart';
 import 'package:args/command_runner.dart';
 import 'package:releaser/instruction/copy_instruction.dart';
+import 'package:releaser/instruction/shell_instruction.dart';
 import 'package:releaser/instruction/zip_instruction.dart';
 import 'package:releaser/software/software_repository.dart';
 
@@ -32,7 +33,8 @@ class AddInstructionCommand extends Command<void> {
         'name',
         abbr: 'n',
         mandatory: true,
-        help: 'The name of the instruction. Available options are: copy, zip',
+        help: 'The name of the instruction. Available options are: copy,'
+            ' zip, shell',
       )
       ..addOption(
         'software',
@@ -78,6 +80,9 @@ class AddInstructionCommand extends Command<void> {
         instruction = _buildZipInstruction(hintMessage);
         break;
 
+      case "shell":
+        instruction = _buildShellInstruction(hintMessage);
+
       default:
         throw ArgumentError("Instruction '$instructionName' not found");
     }
@@ -118,6 +123,19 @@ class AddInstructionCommand extends Command<void> {
       zipFileEncoder: _zipFileEncoder,
       sourceDirectory: Directory(sourcePath!),
       destinationPath: Uri.file(destinationPath!),
+    );
+  }
+
+  Instruction _buildShellInstruction(String hintMessage) {
+    onPrint(hintMessage);
+    onPrint("Try to execute the script manually, before adding it here,"
+        " to check if it's correct and working as expected.");
+    onPrint("Enter the shell script:");
+    String? shellScript = onInput();
+
+    return ShellInstruction(
+      shellScript: shellScript!,
+      os: Platform.operatingSystem,
     );
   }
 }

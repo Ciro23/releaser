@@ -1,7 +1,7 @@
 name: releaser
-description: A sample command-line application.
+description: Manage your software releases
 version: 1.0.0
-# repository: https://github.com/my_org/my_repo
+repository: https://github.com/Ciro23/releaser
 
 environment:
   sdk: ^3.1.5
@@ -16,7 +16,6 @@ dependencies:
   mockito: ^5.4.4
   path: ^1.9.0
   uuid: ^4.3.3
-  # path: ^1.8.0
 
 dev_dependencies:
   build_runner: ^2.4.8

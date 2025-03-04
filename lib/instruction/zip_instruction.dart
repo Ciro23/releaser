@@ -6,8 +6,9 @@ import 'package:uuid/uuid.dart';
 
 import 'package:path/path.dart' as path;
 
-/// Currently only directories are supported, so it's necessary
-/// that the source path ends with a path separator.
+/// A cross-platform compatible instruction to zip directories.
+/// Since only directories are supported, [sourceDirectory]
+/// must end with a path separator.
 class ZipInstruction implements Instruction<ZipInstruction> {
   final UuidValue? _id;
   final ZipFileEncoder zipFileEncoder;

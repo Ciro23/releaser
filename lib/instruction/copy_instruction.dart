@@ -5,8 +5,8 @@ import 'package:uuid/uuid.dart';
 
 import 'instruction.dart';
 
-/// Allows to copy files or directories.
-/// If the source path ends with a path separator, it will
+/// A cross-platform compatible instruction to copy files and directories.
+/// If [sourcePath] ends with a path separator, it will
 /// be threaded as a directory, otherwise as a file.
 class CopyInstruction implements Instruction<CopyInstruction> {
   final UuidValue? _id;
