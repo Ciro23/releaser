@@ -8,9 +8,9 @@ environment:
 
 # Add regular dependencies here.
 dependencies:
-  archive: ^3.4.10
+  archive: ^4.0.4
   args: ^2.4.2
-  csv: ^5.1.1
+  csv: ^6.0.0
   equatable: ^2.0.5
   io: ^1.0.4
   mockito: ^5.4.4
@@ -20,5 +20,5 @@ dependencies:
 
 dev_dependencies:
   build_runner: ^2.4.8
-  lints: ^2.0.0
+  lints: ^5.1.1
   test: ^1.25.2
