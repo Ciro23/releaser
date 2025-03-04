@@ -90,7 +90,6 @@ void main(List<String> arguments) {
   commandRunner.addCommand(releaseCommand);
 
   MenuRouter menuRouter = MenuRouter(commandRunner: commandRunner);
-
   menuRouter.runSelectedAction(arguments).catchError((error) {
     if (error is ArgumentError) {
       stderr.writeln("$error\nUse --help for more information.");

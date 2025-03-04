@@ -132,12 +132,10 @@ class TestableAddInstruction extends AddInstructionCommand {
   final List<String> arguments;
 
   TestableAddInstruction({
-    required SoftwareRepository softwareRepository,
-    required ZipFileEncoder zipFileEncoder,
+    required super.softwareRepository,
+    required super.zipFileEncoder,
     required this.arguments,
   }) : super(
-          softwareRepository: softwareRepository,
-          zipFileEncoder: zipFileEncoder,
           onPrint: (_) {},
           onInput: () => "mocked_user_input",
         );

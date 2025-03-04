@@ -5,7 +5,7 @@ A set of instructions is associated with each software, which the release proces
 
 ## Usage
 
-Whenever paths are required, paths with an ending slash (or backward slash for Windows) will be treated as directories, otherwise they'll be treated as files.   
+Whenever paths are required, paths with an ending slash (or backward slash for Windows) will be treated as directories, otherwise they'll be treated as files.  
 All data is stored inside CSV files in the directory `.releaser` within user's home directory.
 
 ### Adding a software project
@@ -18,7 +18,7 @@ releaser add-software --name <software_name> --root <root_path> --dest <dest_pat
 
 ### Adding a release instruction
 
-Instructions declare how releases should be managed.  
+Instructions declare how releases should be managed.
 
 ```shell
 releaser add-instruction --name <instruction_name> --software <software_name>
@@ -39,6 +39,7 @@ All placeholders are replaced with the actual values of the software which the i
 to at runtime during the release process.
 
 ### Listing all software projects
+
 To list all saved software projects, along with all their details and release instructions, use:
 
 ```shell
@@ -62,6 +63,7 @@ releaser delete-software <software_name>
 ```
 
 ### Example
+
 This is a real world example to use the **releaser** tool.
 
 ```shell

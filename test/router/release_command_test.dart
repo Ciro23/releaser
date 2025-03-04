@@ -70,12 +70,9 @@ class TestableReleaseCommand extends ReleaseCommand {
   final List<String> arguments;
 
   TestableReleaseCommand({
-    required SoftwareRepository softwareRepository,
+    required super.softwareRepository,
     required this.arguments,
-  }) : super(
-          softwareRepository: softwareRepository,
-          //onPrint: (_) {},
-        );
+  });
 
   @override
   ArgResults? get argResults => argParser.parse(arguments);
