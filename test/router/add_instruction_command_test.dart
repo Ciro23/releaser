@@ -5,7 +5,7 @@ import 'package:args/args.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:releaser/instruction/copy_instruction.dart';
-import 'package:releaser/router/add_instruction_command.dart';
+import 'package:releaser/command/add_instruction_command.dart';
 import 'package:releaser/software/software.dart';
 import 'package:releaser/software/software_repository.dart';
 import 'package:test/test.dart';
