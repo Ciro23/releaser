@@ -19,13 +19,13 @@ class ReleaseCommand extends Command<void> {
         'software',
         abbr: 's',
         mandatory: true,
-        help: 'The name of the software which the instruction will be added to',
+        help: 'The name of the software which the instruction will be added to.',
       )
       ..addOption(
         'version',
         abbr: 'v',
         mandatory: true,
-        help: 'The version to be assigned to the release',
+        help: 'The version to be assigned to the release.',
       );
   }
 
@@ -43,10 +43,17 @@ class ReleaseCommand extends Command<void> {
 
     Software? software = await _softwareRepository.findByName(softwareName);
     if (software == null) {
-      throw ArgumentError("Software '$softwareName' not found");
+      throw ArgumentError("Software '$softwareName' not found.");
     }
 
     Software parsedSoftware = _parseInstructions(software, version: version);
+    if (parsedSoftware.releaseInstructions.isEmpty) {
+      stdout.writeln("No instructions have been specified for the release of"
+          " ${parsedSoftware.name}. Cancelling...");
+      stdout.writeln("  (Use \"releaser add-instruction\" to set the first"
+          " instruction)");
+    }
+
     for (final instruction in parsedSoftware.releaseInstructions) {
       stdout.writeln(instruction.executeMessage);
       await instruction.execute();

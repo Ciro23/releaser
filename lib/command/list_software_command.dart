@@ -16,13 +16,13 @@ class ListSoftwareCommand extends Command<void> {
   String get name => "list";
 
   @override
-  String get description => "Show the list of all software managed by releaser";
+  String get description => "Show the list of all software managed by releaser.";
 
   @override
   void run() async {
     List<Software> softwareList = await _softwareRepository.findAll();
     if (softwareList.isEmpty) {
-      onPrint("No registered software");
+      onPrint("No registered software.");
       onPrint(
           "  (Use \"releaser add-software\" to register the first software)");
     }

@@ -11,7 +11,7 @@ class DeleteSoftwareCommand extends Command<void> {
   String get name => "delete-software";
 
   @override
-  String get description => "Delete a software to the managed ones by releaser";
+  String get description => "Delete a software to the managed ones by releaser.";
 
   DeleteSoftwareCommand(this._softwareRepository, this.onPrint);
 
@@ -20,19 +20,19 @@ class DeleteSoftwareCommand extends Command<void> {
     String? softwareName = argResults?.rest.firstOrNull;
     if (softwareName == null) {
       throw ArgumentError("No software name specified using positional"
-          " arguments");
+          " arguments.");
     }
 
     Software? software = await _softwareRepository.findByName(softwareName);
     if (software == null) {
-      throw ArgumentError("Software '$softwareName' not found");
+      throw ArgumentError("Software '$softwareName' not found.");
     }
 
     bool result = await _softwareRepository.delete(software);
     if (result) {
-      onPrint("Software '$softwareName' was successfully deleted");
+      onPrint("Software '$softwareName' was successfully deleted.");
     } else {
-      onPrint("Software '$softwareName' could not be deleted");
+      onPrint("Software '$softwareName' could not be deleted.");
     }
   }
 }

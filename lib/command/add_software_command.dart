@@ -14,7 +14,7 @@ class AddSoftwareCommand extends Command<void> {
   String get name => "add-software";
 
   @override
-  String get description => "Add a software to the managed ones by releaser";
+  String get description => "Add a software to the managed ones by releaser.";
 
   AddSoftwareCommand(this._softwareRepository, this.onPrint) {
     argParser
@@ -22,19 +22,19 @@ class AddSoftwareCommand extends Command<void> {
         'name',
         abbr: 'n',
         mandatory: true,
-        help: 'The name of the software',
+        help: 'The name of the software.',
       )
       ..addOption(
         'root',
         abbr: 'r',
         mandatory: true,
-        help: 'The root path of the software',
+        help: 'The root path of the software.',
       )
       ..addOption(
         'dest',
         abbr: 'd',
         mandatory: true,
-        help: 'The destination path of the released software',
+        help: 'The destination path of the released software.',
       );
   }
 
@@ -54,7 +54,7 @@ class AddSoftwareCommand extends Command<void> {
       await _softwareRepository.save(software);
 
       onPrint("Software '${software.name}' added successfully"
-          " to '${Paths.getSoftwarePath()}'");
+          " to '${Paths.getSoftwarePath()}'.");
       onPrint(
           "  (Use \"releaser add-instruction -s ${software.name}\" to create"
           " the first release instruction)");

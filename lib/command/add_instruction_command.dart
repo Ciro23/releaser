@@ -34,13 +34,13 @@ class AddInstructionCommand extends Command<void> {
         abbr: 'n',
         mandatory: true,
         help: 'The name of the instruction. Available options are: copy,'
-            ' zip, shell',
+            ' zip, shell.',
       )
       ..addOption(
         'software',
         abbr: 's',
         mandatory: true,
-        help: 'The name of the software which the instruction will be added to',
+        help: 'The name of the software which the instruction will be added to.',
       );
   }
 
@@ -48,7 +48,7 @@ class AddInstructionCommand extends Command<void> {
   String get name => "add-instruction";
 
   @override
-  String get description => "Add a release instruction to an existing software";
+  String get description => "Add a release instruction to an existing software.";
 
   @override
   Future<void> run() async {
@@ -57,18 +57,18 @@ class AddInstructionCommand extends Command<void> {
 
     Software? software = await _softwareRepository.findByName(softwareName);
     if (software == null) {
-      throw ArgumentError("Software '$softwareName' not found");
+      throw ArgumentError("Software '$softwareName' not found.");
     }
 
     String rootPath = software.rootPath.toFilePath();
     String destPath = software.releasePath.toFilePath();
-    String hintMessage = "--------------------------------------------"
-        "\nAvailable placeholders:"
-        "\n- \${name} => '${software.name}'"
-        "\n- \${root_path} => '$rootPath'"
-        "\n- \${dest_path} => '$destPath'"
-        "\n- \${version} => the specified version during release"
-        "\n--------------------------------------------";
+    String hintMessage = "\n┌────────────────────────────────────────────────────────────────────┐"
+        "\n│ Available placeholders (be careful for trailing path separators!): │"
+        "\n│ - \${name} => '${software.name}"
+        "\n│ - \${root_path} => '$rootPath"
+        "\n│ - \${dest_path} => '$destPath"
+        "\n│ - \${version} => the specified version during "
+        "\n└────────────────────────────────────────────────────────────────────┘";
 
     Instruction instruction;
     switch (instructionName) {
@@ -91,7 +91,7 @@ class AddInstructionCommand extends Command<void> {
     await _softwareRepository.save(software);
 
     onPrint("Instruction '$instructionName' added successfully to software"
-        " '${software.name}");
+        " '${software.name}.");
     onPrint("  (Use \"releaser release -s ${software.name}\" to execute all"
         " instruction for this software)");
   }
