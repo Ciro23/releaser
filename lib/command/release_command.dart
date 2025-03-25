@@ -54,6 +54,9 @@ class ReleaseCommand extends Command<void> {
           " instruction)");
     }
 
+    parsedSoftware.releaseInstructions
+        .sort((a, b) => a.executionOrder.compareTo(b.executionOrder));
+
     for (final instruction in parsedSoftware.releaseInstructions) {
       stdout.writeln(instruction.executeMessage);
       await instruction.execute();
@@ -80,6 +83,7 @@ class ReleaseCommand extends Command<void> {
 
       Instruction parsedInstruction = instruction.create(
         instruction.id,
+        instruction.executionOrder,
         parsedArguments,
       );
       parsedInstructions.add(parsedInstruction);

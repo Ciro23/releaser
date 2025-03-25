@@ -9,7 +9,10 @@ import 'instruction.dart';
 /// If [sourcePath] ends with a path separator, it will
 /// be threaded as a directory, otherwise as a file.
 class CopyInstruction implements Instruction<CopyInstruction> {
-  final UuidValue? _id;
+  final int? _id;
+
+  @override
+  final int executionOrder;
 
   final Uri sourcePath;
   final Uri destinationPath;
@@ -20,7 +23,8 @@ class CopyInstruction implements Instruction<CopyInstruction> {
   final String os;
 
   CopyInstruction({
-    UuidValue? id,
+    int? id,
+    required this.executionOrder,
     required this.sourcePath,
     required this.destinationPath,
     required String os,
@@ -48,7 +52,7 @@ class CopyInstruction implements Instruction<CopyInstruction> {
   }
 
   @override
-  UuidValue? get id => _id;
+  int? get id => _id;
 
   @override
   String get name => "Copy";
@@ -71,9 +75,14 @@ class CopyInstruction implements Instruction<CopyInstruction> {
   /// The first element of [arguments] is the path of the source
   /// directory, while the second is the destination path.
   @override
-  CopyInstruction create(UuidValue? id, List<String> arguments) {
+  CopyInstruction create(
+    int? id,
+    int order,
+    List<String> arguments,
+  ) {
     return CopyInstruction(
       id: id,
+      executionOrder: order,
       sourcePath: Uri.file(arguments[0]),
       destinationPath: Uri.file(arguments[1]),
       os: os,

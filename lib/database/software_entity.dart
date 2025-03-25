@@ -1,14 +1,14 @@
 import 'package:equatable/equatable.dart';
 import 'package:uuid/uuid_value.dart';
 
-/// Represents how a [Software] is stored in a CSV file.
-class SoftwareCsv extends Equatable {
-  final UuidValue id;
+/// Represents how a [Software] is stored in a the database.
+class SoftwareEntity extends Equatable {
+  final int? id;
   final String name;
   final String rootPath;
   final String releasePath;
 
-  SoftwareCsv({
+  SoftwareEntity({
     required this.id,
     required this.name,
     required this.rootPath,

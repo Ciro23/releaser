@@ -10,14 +10,18 @@ import 'package:path/path.dart' as path;
 /// Since only directories are supported, [sourceDirectory]
 /// must end with a path separator.
 class ZipInstruction implements Instruction<ZipInstruction> {
-  final UuidValue? _id;
+  final int? _id;
   final ZipFileEncoder zipFileEncoder;
 
+  @override
+  final int executionOrder;
+ 
   final Directory sourceDirectory;
   final Uri destinationPath;
 
   ZipInstruction({
-    UuidValue? id,
+    int? id,
+    required this.executionOrder,
     required this.zipFileEncoder,
     required this.sourceDirectory,
     required this.destinationPath,
@@ -30,7 +34,7 @@ class ZipInstruction implements Instruction<ZipInstruction> {
   }
 
   @override
-  UuidValue? get id => _id;
+  int? get id => _id;
 
   @override
   String get name => "Zip";
@@ -53,9 +57,10 @@ class ZipInstruction implements Instruction<ZipInstruction> {
   /// The first element of [arguments] is the path of the source
   /// directory, while the second is the destination path.
   @override
-  ZipInstruction create(UuidValue? id, List<String> arguments) {
+  ZipInstruction create(int? id, int order, List<String> arguments,) {
     return ZipInstruction(
       id: id,
+      executionOrder: order,
       zipFileEncoder: zipFileEncoder,
       sourceDirectory: Directory(arguments[0]),
       destinationPath: Uri(path: arguments[1]),

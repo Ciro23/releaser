@@ -105,6 +105,7 @@ class AddInstructionCommand extends Command<void> {
     String? destinationPath = onInput();
 
     return CopyInstruction(
+      executionOrder: 1,
       sourcePath: Uri.file(sourcePath!),
       destinationPath: Uri.file(destinationPath!),
       os: Platform.operatingSystem,
@@ -120,6 +121,7 @@ class AddInstructionCommand extends Command<void> {
     String? destinationPath = onInput();
 
     return ZipInstruction(
+      executionOrder: 1,
       zipFileEncoder: _zipFileEncoder,
       sourceDirectory: Directory(sourcePath!),
       destinationPath: Uri.file(destinationPath!),
@@ -134,6 +136,7 @@ class AddInstructionCommand extends Command<void> {
     String? shellScript = onInput();
 
     return ShellInstruction(
+      executionOrder: 1,
       shellScript: shellScript!,
       os: Platform.operatingSystem,
     );

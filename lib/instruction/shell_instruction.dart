@@ -13,7 +13,10 @@ import 'instruction.dart';
 /// The script's syntax must be compatible with the installed
 /// shell.
 class ShellInstruction implements Instruction<ShellInstruction> {
-  final UuidValue? _id;
+  final int? _id;
+
+  @override
+  final int executionOrder;
 
   /// E.g. "tar -C project_directory/ -czf compressed_folder.tar.gz ./"
   final String shellScript;
@@ -24,10 +27,11 @@ class ShellInstruction implements Instruction<ShellInstruction> {
   final String os;
 
   ShellInstruction({
-    UuidValue? id,
+    int? id,
+    required this.executionOrder,
     required this.shellScript,
     required String os,
-  }) : _id = id,
+  })  : _id = id,
         os = os.toLowerCase();
 
   @override
@@ -50,7 +54,7 @@ class ShellInstruction implements Instruction<ShellInstruction> {
   }
 
   @override
-  UuidValue? get id => _id;
+  int? get id => _id;
 
   @override
   String get name => "Shell";
@@ -67,9 +71,14 @@ class ShellInstruction implements Instruction<ShellInstruction> {
   }
 
   @override
-  ShellInstruction create(UuidValue? id, List<String> arguments) {
+  ShellInstruction create(
+    int? id,
+    int order,
+    List<String> arguments,
+  ) {
     return ShellInstruction(
       id: id,
+      executionOrder: order,
       shellScript: arguments[0],
       os: os,
     );

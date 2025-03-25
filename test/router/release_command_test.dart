@@ -9,7 +9,6 @@ import 'package:releaser/instruction/instruction.dart';
 import 'package:releaser/software/software.dart';
 import 'package:releaser/software/software_repository.dart';
 import 'package:test/test.dart';
-import 'package:uuid/uuid.dart';
 
 import 'add_instruction_command_test.mocks.dart';
 
@@ -94,7 +93,7 @@ class TestableInstruction extends CopyInstruction {
   Future<void> execute() async {}
 
   @override
-  CopyInstruction create(UuidValue? id, List<String> arguments) {
+  CopyInstruction create(int? id, List<String> arguments) {
     parsedInstruction = TestableInstruction(
       sourcePath: Uri.file(arguments[0]),
       destinationPath: Uri.file(arguments[1]),

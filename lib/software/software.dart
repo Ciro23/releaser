@@ -5,7 +5,7 @@ import '../instruction/instruction.dart';
 
 /// The main entity of Releaser.
 class Software extends Equatable {
-  final UuidValue? id;
+  final int? id;
   final String name;
   final Uri rootPath;
   final Uri releasePath;
@@ -34,10 +34,5 @@ class Software extends Equatable {
   }
 
   @override
-  List<Object?> get props => [
-        id,
-        name,
-        rootPath,
-        releasePath,
-      ];
+  List<Object?> get props => [id];
 }

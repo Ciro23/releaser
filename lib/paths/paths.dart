@@ -11,14 +11,10 @@ class Paths {
     return '${getHomePath()}.releaser$sep';
   }
 
-  /// The file containing the list of saved software.
-  static String getSoftwarePath() {
-    return '${getReleaserPath()}software.csv';
-  }
-
-  /// The file containing the list of saved instructions.
-  static String getInstructionPath() {
-    return '${getReleaserPath()}instruction.csv';
+  /// The full path of the database to store
+  /// application's data.
+  static String getDatabasePath() {
+    return "${Paths.getReleaserPath()}releaser.db";
   }
 
   /// The OS specific home path.

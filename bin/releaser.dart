@@ -5,18 +5,17 @@ import 'package:args/args.dart';
 import 'package:args/command_runner.dart';
 import 'package:csv/csv.dart';
 import 'package:releaser/command/delete_software_command.dart';
+import 'package:releaser/command/edit_software_command.dart';
 import 'package:releaser/command/release_command.dart';
-import 'package:releaser/csv/file_manager.dart';
-import 'package:releaser/csv/instruction_csv_manager.dart';
-import 'package:releaser/csv/software_csv_manager.dart';
-import 'package:releaser/instruction/instruction_csv.dart';
+import 'package:releaser/database/database.dart';
+import 'package:releaser/database/instruction_entity.dart';
 import 'package:releaser/paths/paths.dart';
 import 'package:releaser/command/add_instruction_command.dart';
 import 'package:releaser/command/add_software_command.dart';
 import 'package:releaser/command/list_software_command.dart';
 import 'package:releaser/router/menu_router.dart';
-import 'package:releaser/software/software_csv.dart';
-import 'package:releaser/software/software_csv_datasource.dart';
+import 'package:releaser/database/software_entity.dart';
+import 'package:releaser/software/software_datasource.dart';
 import 'package:releaser/software/software_repository.dart';
 import 'package:uuid/uuid.dart';
 
@@ -71,28 +70,12 @@ void _createSystemFolder() {
 }
 
 CommandRunner<void> _initializeDependencies() {
-  String softwareFilePath = Paths.getSoftwarePath();
-  String instructionFilePath = Paths.getInstructionPath();
-
-  final csvToList = CsvToListConverter();
-  final listToCsv = ListToCsvConverter();
-
-  FileManager<SoftwareCsv> softwareCsvManager = SoftwareCsvManager(
-    csvFile: File(softwareFilePath),
-    csvToListConverter: csvToList,
-    listToCsvConverter: listToCsv,
-  );
-  FileManager<InstructionCsv> instructionCsvManager = InstructionCsvManager(
-    csvFile: File(instructionFilePath),
-    csvToListConverter: csvToList,
-    listToCsvConverter: listToCsv,
-  );
-
+  DatabaseManager databaseManager = DatabaseManager(Paths.getDatabasePath());
   ZipFileEncoder zipFileEncoder = ZipFileEncoder();
-  SoftwareRepository softwareRepository = SoftwareCsvDataSource(
-    uuid: Uuid(),
-    softwareCsvManager: softwareCsvManager,
-    instructionCsvManager: instructionCsvManager,
+
+  SoftwareRepository softwareRepository = SoftwareDataSource(
+    softwareDao: databaseManager.softwareDao,
+    instructionDao: databaseManager.instructionDao,
     zipFileEncoder: zipFileEncoder,
   );
 
@@ -110,6 +93,10 @@ CommandRunner<void> _initializeDependencies() {
   }
 
   AddSoftwareCommand addSoftwareCommand = AddSoftwareCommand(
+    softwareRepository,
+    onPrint,
+  );
+  EditSoftwareCommand editSoftwareCommand = EditSoftwareCommand(
     softwareRepository,
     onPrint,
   );
@@ -131,6 +118,7 @@ CommandRunner<void> _initializeDependencies() {
     softwareRepository: softwareRepository,
   );
   commandRunner.addCommand(addSoftwareCommand);
+  commandRunner.addCommand(editSoftwareCommand);
   commandRunner.addCommand(listSoftwareCommand);
   commandRunner.addCommand(deleteSoftwareCommand);
   commandRunner.addCommand(addInstructionCommand);
@@ -143,9 +131,9 @@ CommandRunner<void> _initializeDependencies() {
     negatable: false,
   );
   commandRunner.argParser.addFlag(
-      "version",
-      help: "Displays this program's version",
-      negatable: false,
+    "version",
+    help: "Displays this program's version",
+    negatable: false,
   );
 
   return commandRunner;

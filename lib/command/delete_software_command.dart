@@ -11,7 +11,7 @@ class DeleteSoftwareCommand extends Command<void> {
   String get name => "delete-software";
 
   @override
-  String get description => "Delete a software to the managed ones by releaser.";
+  String get description => "Delete a software and all its instructions.";
 
   DeleteSoftwareCommand(this._softwareRepository, this.onPrint);
 

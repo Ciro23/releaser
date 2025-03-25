@@ -97,6 +97,7 @@ void main() {
 
     await addCopyInstruction.run();
     software.addInstruction(CopyInstruction(
+      executionOrder: 1,
       sourcePath: Uri.file("test"),
       destinationPath: Uri.file("test"),
       os: Platform.operatingSystem,
@@ -117,6 +118,7 @@ void main() {
 
     await addZipInstruction.run();
     software.addInstruction(CopyInstruction(
+      executionOrder: 1,
       sourcePath: Uri.file("test"),
       destinationPath: Uri.file("test"),
       os: Platform.operatingSystem,

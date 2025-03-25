@@ -5,11 +5,13 @@ import 'package:uuid/uuid.dart';
 /// actions.
 /// [T] is the actual implementation of the instruction.
 abstract class Instruction<T> {
-  UuidValue? get id;
+  int? get id;
 
   /// The name is used to make instructions humanly
   /// recognizable.
   String get name;
+
+  int get executionOrder;
 
   /// The arguments required by the implementation to
   /// properly work. It's the same value passed using
@@ -25,5 +27,5 @@ abstract class Instruction<T> {
   /// Builder method to create an instance of the actual
   /// implementation. [arguments] are used differently depending
   /// on the implementation.
-  T create(UuidValue? id, List<String> arguments);
+  T create(int? id, int order, List<String> arguments);
 }

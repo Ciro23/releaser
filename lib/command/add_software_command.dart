@@ -54,7 +54,7 @@ class AddSoftwareCommand extends Command<void> {
       await _softwareRepository.save(software);
 
       onPrint("Software '${software.name}' added successfully"
-          " to '${Paths.getSoftwarePath()}'.");
+          " to '${Paths.getDatabasePath()}'.");
       onPrint(
           "  (Use \"releaser add-instruction -s ${software.name}\" to create"
           " the first release instruction)");
