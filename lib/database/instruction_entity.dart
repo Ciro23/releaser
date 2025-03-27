@@ -1,5 +1,4 @@
 import 'package:equatable/equatable.dart';
-import 'package:uuid/uuid.dart';
 
 /// Represents how a [Instruction] is stored in the database.
 class InstructionEntity extends Equatable {
@@ -21,11 +20,5 @@ class InstructionEntity extends Equatable {
   });
 
   @override
-  List<Object?> get props => [
-        id,
-        softwareId,
-        name,
-        executionOrder,
-        arguments,
-      ];
+  List<Object?> get props => [id, softwareId, name, executionOrder, arguments];
 }

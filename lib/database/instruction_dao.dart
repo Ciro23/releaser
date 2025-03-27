@@ -7,10 +7,14 @@ class InstructionDao {
 
   InstructionDao({required this.db});
 
-  List<InstructionEntity> insertInstructions(List<InstructionEntity> instructions) {
+  List<InstructionEntity> insertInstructions(
+    List<InstructionEntity> instructions,
+  ) {
     db.execute("BEGIN TRANSACTION");
-    PreparedStatement statement = db.prepare("INSERT INTO instructions"
-        " (software_id, name, execution_order, arguments) VALUES (?, ?, ?, ?)");
+    PreparedStatement statement = db.prepare(
+      "INSERT INTO instructions"
+      " (software_id, name, execution_order, arguments) VALUES (?, ?, ?, ?)",
+    );
 
     List<InstructionEntity> insertedInstructions = [];
     try {

@@ -58,11 +58,14 @@ class AddSoftwareCommand extends Command<void> {
     try {
       await softwareRepository.save(software);
 
-      onStdOut("Software '${software.name}' added successfully"
-          " to '${Paths.getDatabasePath()}'.");
       onStdOut(
-          "  (Use \"releaser add-instruction -s ${software.name}\" to create"
-          " the first release instruction)");
+        "Software '${software.name}' added successfully"
+        " to '${Paths.getDatabasePath()}'.",
+      );
+      onStdOut(
+        "  (Use \"releaser add-instruction -s ${software.name}\" to create"
+        " the first release instruction)",
+      );
     } on StateError catch (e) {
       onStdErr(e);
       onStdOut("  (Use \"releaser list\" to verify existing software)");

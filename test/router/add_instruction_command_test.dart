@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:archive/archive_io.dart';
 import 'package:args/args.dart';
 import 'package:mockito/annotations.dart';
@@ -12,10 +10,7 @@ import 'package:test/test.dart';
 
 import 'add_instruction_command_test.mocks.dart';
 
-@GenerateNiceMocks([
-  MockSpec<SoftwareRepository>(),
-  MockSpec<ZipFileEncoder>(),
-])
+@GenerateNiceMocks([MockSpec<SoftwareRepository>(), MockSpec<ZipFileEncoder>()])
 void main() {
   // Dependencies
   late SoftwareRepository softwareRepository;
@@ -43,22 +38,12 @@ void main() {
     addCopyInstruction = TestableAddInstruction(
       softwareRepository: softwareRepository,
       zipFileEncoder: zipFileEncoder,
-      arguments: [
-        "--software",
-        "test_software",
-        "--name",
-        "copy",
-      ],
+      arguments: ["--software", "test_software", "--name", "copy"],
     );
     addZipInstruction = TestableAddInstruction(
       softwareRepository: softwareRepository,
       zipFileEncoder: zipFileEncoder,
-      arguments: [
-        "--software",
-        "test_software",
-        "--name",
-        "zip",
-      ],
+      arguments: ["--software", "test_software", "--name", "zip"],
     );
   });
 
@@ -76,8 +61,9 @@ void main() {
       releasePath: Uri.file("releasePath"),
       releaseInstructions: [],
     );
-    when(softwareRepository.findByName("test_software"))
-        .thenAnswer((_) async => software);
+    when(
+      softwareRepository.findByName("test_software"),
+    ).thenAnswer((_) async => software);
 
     expect(
       () => addNonExistentInstruction.run(),
@@ -92,8 +78,9 @@ void main() {
       releasePath: Uri.file("releasePath"),
       releaseInstructions: [],
     );
-    when(softwareRepository.findByName(software.name))
-        .thenAnswer((_) async => software);
+    when(
+      softwareRepository.findByName(software.name),
+    ).thenAnswer((_) async => software);
 
     await addCopyInstruction.run();
     software.addInstruction(
@@ -114,8 +101,9 @@ void main() {
       releasePath: Uri.file("releasePath"),
       releaseInstructions: [],
     );
-    when(softwareRepository.findByName(software.name))
-        .thenAnswer((_) async => software);
+    when(
+      softwareRepository.findByName(software.name),
+    ).thenAnswer((_) async => software);
 
     await addZipInstruction.run();
     software.addInstruction(
@@ -139,10 +127,7 @@ class TestableAddInstruction extends AddInstructionCommand {
     required super.softwareRepository,
     required super.zipFileEncoder,
     required this.arguments,
-  }) : super(
-          onStdOut: (_) {},
-          onStdIn: () => "mocked_user_input",
-        );
+  }) : super(onStdOut: (_) {}, onStdIn: () => "mocked_user_input");
 
   @override
   ArgResults? get argResults => argParser.parse(arguments);

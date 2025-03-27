@@ -20,9 +20,7 @@ class InstructionVisitor {
 
   void doForCopy(CopyInstruction instruction) {
     if (!['windows', 'macos', 'linux'].contains(os)) {
-      throw UnsupportedError(
-        'The operating system $os is not supported.',
-      );
+      throw UnsupportedError('The operating system $os is not supported.');
     }
 
     String source = instruction.sourcePath.toFilePath();
@@ -38,8 +36,10 @@ class InstructionVisitor {
   }
 
   void doForZip(ZipInstruction instruction) {
-    zipFileEncoder.zipDirectory(instruction.sourceDirectory,
-        filename: path.fromUri(instruction.destinationPath));
+    zipFileEncoder.zipDirectory(
+      instruction.sourceDirectory,
+      filename: path.fromUri(instruction.destinationPath),
+    );
   }
 
   Future<void> doForShell(ShellInstruction instruction) async {

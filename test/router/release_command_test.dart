@@ -25,12 +25,7 @@ void main() {
   setUp(() {
     releaseCommand = TestableReleaseCommand(
       softwareRepository: softwareRepository,
-      arguments: [
-        "--software",
-        "test_software",
-        "--version",
-        "1.0.0",
-      ],
+      arguments: ["--software", "test_software", "--version", "1.0.0"],
       instructionRunner: InstructionVisitor(
         os: Platform.operatingSystem,
         zipFileEncoder: ZipFileEncoder(),
@@ -39,19 +34,14 @@ void main() {
   });
 
   test("throws exception if software doesn't exist", () {
-    expect(
-      () => releaseCommand.run(),
-      throwsA(TypeMatcher<ArgumentError>()),
-    );
+    expect(() => releaseCommand.run(), throwsA(TypeMatcher<ArgumentError>()));
   });
 
   test("instruction variables should be parsed", () async {
     TestableInstruction instruction = TestableInstruction(
       executionOrder: 1,
       sourcePath: Uri.file(r"${root_path}"),
-      destinationPath: Uri.file(
-        r"${dest_path}",
-      ),
+      destinationPath: Uri.file(r"${dest_path}"),
     );
 
     Software software = Software(
@@ -60,8 +50,9 @@ void main() {
       releasePath: Uri.file(r"/test/${name}/${version}/"),
       releaseInstructions: [instruction],
     );
-    when(softwareRepository.findByName(software.name))
-        .thenAnswer((_) async => software);
+    when(
+      softwareRepository.findByName(software.name),
+    ).thenAnswer((_) async => software);
 
     await releaseCommand.run();
 

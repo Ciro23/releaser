@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:args/command_runner.dart';
 import 'package:releaser/instruction/instruction_visitor.dart';
 import 'package:releaser/software/software_repository.dart';
@@ -27,7 +25,8 @@ class ReleaseCommand extends Command<void> {
         'software',
         abbr: 's',
         mandatory: true,
-        help: 'The name of the software which the instruction will be added to.',
+        help:
+            'The name of the software which the instruction will be added to.',
       )
       ..addOption(
         'version',
@@ -41,7 +40,8 @@ class ReleaseCommand extends Command<void> {
   String get name => "release";
 
   @override
-  String get description => "Execute the release process of a software,"
+  String get description =>
+      "Execute the release process of a software,"
       " involving all associated instructions.";
 
   @override
@@ -56,10 +56,14 @@ class ReleaseCommand extends Command<void> {
 
     Software parsedSoftware = _parseInstructions(software, version: version);
     if (parsedSoftware.releaseInstructions.isEmpty) {
-      onStdErr("Warning: No instructions have been specified for the release"
-          " of ${parsedSoftware.name}. Operation cancelled.");
-      onStdOut("  (Use \"releaser add-instruction\" to set the first"
-          " instruction)");
+      onStdErr(
+        "Warning: No instructions have been specified for the release"
+        " of ${parsedSoftware.name}. Operation cancelled.",
+      );
+      onStdOut(
+        "  (Use \"releaser add-instruction\" to set the first"
+        " instruction)",
+      );
     }
 
     parsedSoftware.releaseInstructions.sort();
@@ -102,11 +106,7 @@ class ReleaseCommand extends Command<void> {
     );
   }
 
-  String _parseVariables(
-    String text,
-    Software software, {
-    String? version,
-  }) {
+  String _parseVariables(String text, Software software, {String? version}) {
     String rootPath = software.rootPath.toFilePath();
     String releasePath = software.releasePath.toFilePath();
 

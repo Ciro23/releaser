@@ -9,13 +9,10 @@ class SoftwareDao {
 
   SoftwareEntity insertSoftware(SoftwareEntity software) {
     db.execute(
-        "INSERT INTO software (name, root_path, release_path) VALUES"
-        "(?, ?, ?)",
-        [
-          software.name,
-          software.rootPath,
-          software.releasePath,
-        ]);
+      "INSERT INTO software (name, root_path, release_path) VALUES"
+      "(?, ?, ?)",
+      [software.name, software.rootPath, software.releasePath],
+    );
 
     return SoftwareEntity(
       id: db.lastInsertRowId,
@@ -27,14 +24,10 @@ class SoftwareDao {
 
   SoftwareEntity updateSoftware(SoftwareEntity software) {
     db.execute(
-        "UPDATE software SET name = ?, root_path = ?, release_path = ?"
-        " WHERE id = ?",
-        [
-          software.name,
-          software.rootPath,
-          software.releasePath,
-          software.id,
-        ]);
+      "UPDATE software SET name = ?, root_path = ?, release_path = ?"
+      " WHERE id = ?",
+      [software.name, software.rootPath, software.releasePath, software.id],
+    );
     return software;
   }
 

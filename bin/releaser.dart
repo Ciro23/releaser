@@ -3,12 +3,10 @@ import 'dart:io';
 import 'package:archive/archive_io.dart';
 import 'package:args/args.dart';
 import 'package:args/command_runner.dart';
-import 'package:csv/csv.dart';
 import 'package:releaser/command/delete_software_command.dart';
 import 'package:releaser/command/edit_software_command.dart';
 import 'package:releaser/command/release_command.dart';
 import 'package:releaser/database/database.dart';
-import 'package:releaser/database/instruction_entity.dart';
 import 'package:releaser/instruction/instruction_factory.dart';
 import 'package:releaser/instruction/instruction_visitor.dart';
 import 'package:releaser/paths/paths.dart';
@@ -16,10 +14,8 @@ import 'package:releaser/command/add_instruction_command.dart';
 import 'package:releaser/command/add_software_command.dart';
 import 'package:releaser/command/list_software_command.dart';
 import 'package:releaser/router/menu_router.dart';
-import 'package:releaser/database/software_entity.dart';
 import 'package:releaser/software/software_datasource.dart';
 import 'package:releaser/software/software_repository.dart';
-import 'package:uuid/uuid.dart';
 
 /// This is the entry point of "releaser".
 /// Here the application and its dependencies are initialized,
@@ -31,7 +27,9 @@ void main(List<String> arguments) {
 }
 
 void _runApplication(
-    CommandRunner<void> commandRunner, List<String> arguments) {
+  CommandRunner<void> commandRunner,
+  List<String> arguments,
+) {
   MenuRouter menuRouter = MenuRouter(commandRunner: commandRunner);
   ArgResults parsedArgs;
 
@@ -95,9 +93,11 @@ CommandRunner<void> _initializeDependencies() {
   onStdOut(Object? message) {
     stdout.writeln(message);
   }
+
   onStdErr(Object? message) {
     stderr.writeln(message);
   }
+
   String? onInput() {
     return stdin.readLineSync();
   }

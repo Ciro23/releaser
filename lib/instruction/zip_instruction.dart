@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:archive/archive_io.dart';
 import 'package:releaser/instruction/instruction.dart';
 
 import 'instruction_visitor.dart';
@@ -23,9 +22,9 @@ class ZipInstruction extends Instruction {
 
   @override
   List<String> get arguments => [
-        sourceDirectory.path,
-        destinationPath.toFilePath(),
-      ];
+    sourceDirectory.path,
+    destinationPath.toFilePath(),
+  ];
 
   late final Directory sourceDirectory;
   late final Uri destinationPath;

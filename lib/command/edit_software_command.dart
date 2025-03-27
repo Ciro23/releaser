@@ -1,7 +1,6 @@
 import 'package:args/command_runner.dart';
 import 'package:releaser/software/software_repository.dart';
 
-import '../paths/paths.dart';
 import '../software/software.dart';
 
 class EditSoftwareCommand extends Command<void> {
@@ -27,11 +26,7 @@ class EditSoftwareCommand extends Command<void> {
         help: 'The current name of the software to edit.',
         mandatory: true,
       )
-      ..addOption(
-        'name',
-        abbr: 'n',
-        help: 'The updated name of the software.',
-      )
+      ..addOption('name', abbr: 'n', help: 'The updated name of the software.')
       ..addOption(
         'root',
         abbr: 'r',

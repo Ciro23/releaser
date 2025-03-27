@@ -1,20 +1,12 @@
-import 'dart:io';
-
 import 'package:archive/archive_io.dart';
-import 'package:releaser/database/database.dart';
 import 'package:releaser/database/instruction_dao.dart';
 import 'package:releaser/database/instruction_entity.dart';
 import 'package:releaser/instruction/instruction_factory.dart';
-import 'package:releaser/instruction/shell_instruction.dart';
-import 'package:releaser/instruction/zip_instruction.dart';
 import 'package:releaser/software/software.dart';
 import 'package:releaser/database/software_entity.dart';
 import 'package:releaser/software/software_repository.dart';
 
-import 'package:uuid/uuid.dart';
-
 import '../database/software_dao.dart';
-import '../instruction/copy_instruction.dart';
 import '../instruction/instruction.dart';
 
 class SoftwareDataSource implements SoftwareRepository {
@@ -36,8 +28,10 @@ class SoftwareDataSource implements SoftwareRepository {
     if (software.id == null) {
       Software? existingSoftware = await findByName(software.name);
       if (existingSoftware != null) {
-        throw StateError("Software with name '${software.name}' already"
-            " exists");
+        throw StateError(
+          "Software with name '${software.name}' already"
+          " exists",
+        );
       }
 
       return _insertSoftwareWithInstructions(software);
@@ -142,9 +136,10 @@ class SoftwareDataSource implements SoftwareRepository {
       name: softwareDb.name,
       rootPath: rootPath,
       releasePath: releasePath,
-      releaseInstructions: instructionsDb.map((e) {
-        return _dbToInstruction(e);
-      }).toList(),
+      releaseInstructions:
+          instructionsDb.map((e) {
+            return _dbToInstruction(e);
+          }).toList(),
     );
   }
 

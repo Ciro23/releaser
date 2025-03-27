@@ -1,7 +1,5 @@
 import 'dart:io';
-import 'dart:math';
 
-import 'package:archive/archive_io.dart';
 import 'package:args/command_runner.dart';
 import 'package:releaser/instruction/copy_instruction.dart';
 import 'package:releaser/instruction/shell_instruction.dart';
@@ -31,7 +29,8 @@ class AddInstructionCommand extends Command<void> {
         'name',
         abbr: 'n',
         mandatory: true,
-        help: 'The name of the instruction. Available options are: copy,'
+        help:
+            'The name of the instruction. Available options are: copy,'
             ' zip, shell.',
       )
       ..addOption(
@@ -97,10 +96,14 @@ class AddInstructionCommand extends Command<void> {
     software.addInstruction(instruction);
     await softwareRepository.save(software);
 
-    onStdOut("Instruction '$instructionName' added successfully to software"
-        " '${software.name}.");
-    onStdOut("  (Use \"releaser release -s ${software.name}\" to execute all"
-        " instruction for this software)");
+    onStdOut(
+      "Instruction '$instructionName' added successfully to software"
+      " '${software.name}.",
+    );
+    onStdOut(
+      "  (Use \"releaser release -s ${software.name}\" to execute all"
+      " instruction for this software)",
+    );
   }
 
   Instruction _buildCopyInstruction(String hintMessage, int executionOrder) {
@@ -135,8 +138,10 @@ class AddInstructionCommand extends Command<void> {
 
   Instruction _buildShellInstruction(String hintMessage, int executionOrder) {
     onStdOut(hintMessage);
-    onStdOut("Try to execute the script manually, before adding it here,"
-        " to check if it's correct and working as expected.");
+    onStdOut(
+      "Try to execute the script manually, before adding it here,"
+      " to check if it's correct and working as expected.",
+    );
     onStdOut("Enter the shell script:");
     String? shellScript = onStdIn();
 

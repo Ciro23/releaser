@@ -35,7 +35,9 @@ class InstructionFactory {
       );
     }
 
-    throw UnsupportedError("The instruction '$name' is not supported and"
-        " cannot be deserialized.");
+    throw UnsupportedError(
+      "The instruction '$name' is not supported and"
+      " cannot be deserialized.",
+    );
   }
 }

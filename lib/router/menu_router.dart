@@ -7,9 +7,7 @@ import 'router.dart';
 class MenuRouter implements Router {
   final CommandRunner<void> commandRunner;
 
-  MenuRouter({
-    required this.commandRunner,
-  });
+  MenuRouter({required this.commandRunner});
 
   @override
   Future<void> runSelectedAction(List<String> arguments) {

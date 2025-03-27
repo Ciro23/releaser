@@ -1,5 +1,4 @@
 import 'package:equatable/equatable.dart';
-import 'package:uuid/uuid_value.dart';
 
 /// Represents how a [Software] is stored in a the database.
 class SoftwareEntity extends Equatable {
@@ -16,10 +15,5 @@ class SoftwareEntity extends Equatable {
   });
 
   @override
-  List<Object?> get props => [
-        id,
-        name,
-        rootPath,
-        releasePath,
-      ];
+  List<Object?> get props => [id, name, rootPath, releasePath];
 }

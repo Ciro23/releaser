@@ -24,8 +24,10 @@ class DeleteSoftwareCommand extends Command<void> {
   Future<void> run() async {
     String? softwareName = argResults?.rest.firstOrNull;
     if (softwareName == null) {
-      onStdErr("No software name specified using positional"
-          " arguments.");
+      onStdErr(
+        "No software name specified using positional"
+        " arguments.",
+      );
       return;
     }
 

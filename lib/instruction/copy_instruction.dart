@@ -1,8 +1,4 @@
-import 'dart:io';
-
-import 'package:io/io.dart';
 import 'package:releaser/instruction/instruction_visitor.dart';
-import 'package:uuid/uuid.dart';
 
 import 'instruction.dart';
 
@@ -24,9 +20,9 @@ class CopyInstruction extends Instruction {
 
   @override
   List<String> get arguments => [
-        sourcePath.toFilePath(),
-        destinationPath.toFilePath(),
-      ];
+    sourcePath.toFilePath(),
+    destinationPath.toFilePath(),
+  ];
 
   late final Uri sourcePath;
   late final Uri destinationPath;

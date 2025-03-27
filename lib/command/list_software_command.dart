@@ -30,7 +30,8 @@ class ListSoftwareCommand extends Command<void> {
     if (softwareList.isEmpty) {
       onStdErr("No registered software.");
       onStdOut(
-          "  (Use \"releaser add-software\" to register the first software)");
+        "  (Use \"releaser add-software\" to register the first software)",
+      );
     }
 
     for (var element in softwareList) {
@@ -38,7 +39,8 @@ class ListSoftwareCommand extends Command<void> {
       onStdOut("Root path: ${element.rootPath.toFilePath()}");
       onStdOut("Release path: ${element.releasePath.toFilePath()}");
       onStdOut(
-          "Instructions: ${element.releaseInstructions.isEmpty ? 'none' : ''}");
+        "Instructions: ${element.releaseInstructions.isEmpty ? 'none' : ''}",
+      );
 
       element.releaseInstructions.sort();
       for (int i = 0; i < element.releaseInstructions.length; i++) {
