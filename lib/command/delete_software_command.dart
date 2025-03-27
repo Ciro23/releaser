@@ -18,20 +18,20 @@ class DeleteSoftwareCommand extends Command<void> {
     required this.softwareRepository,
     required this.onStdOut,
     required this.onStdErr,
-  });
+  }) {
+    argParser.addOption(
+      'software',
+      abbr: 's',
+      help: 'The name of the software to delete.',
+      mandatory: true,
+    );
+  }
 
   @override
   Future<void> run() async {
-    String? softwareName = argResults?.rest.firstOrNull;
-    if (softwareName == null) {
-      onStdErr(
-        "No software name specified using positional"
-        " arguments.",
-      );
-      return;
-    }
-
+    String softwareName = argResults?['software'];
     Software? software = await softwareRepository.findByName(softwareName);
+
     if (software == null) {
       onStdErr("Software '$softwareName' not found.");
       return;
