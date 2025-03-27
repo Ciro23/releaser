@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 
 import 'package:archive/archive_io.dart';
 import 'package:args/command_runner.dart';
@@ -13,21 +14,18 @@ import '../software/software.dart';
 /// Add a release instruction to a software.
 /// Instructions may require different parameters, so
 /// all implementation details are collected in a second
-/// moment using [onInput].
+/// moment using [onStdIn].
 class AddInstructionCommand extends Command<void> {
-  final SoftwareRepository _softwareRepository;
-  final ZipFileEncoder _zipFileEncoder;
+  final SoftwareRepository softwareRepository;
 
-  final void Function(Object?) onPrint;
-  final String? Function() onInput;
+  final void Function(Object?) onStdOut;
+  final String? Function() onStdIn;
 
   AddInstructionCommand({
-    required SoftwareRepository softwareRepository,
-    required ZipFileEncoder zipFileEncoder,
-    required this.onPrint,
-    required this.onInput,
-  })  : _softwareRepository = softwareRepository,
-        _zipFileEncoder = zipFileEncoder {
+    required this.softwareRepository,
+    required this.onStdOut,
+    required this.onStdIn,
+  }) {
     argParser
       ..addOption(
         'name',
@@ -40,7 +38,8 @@ class AddInstructionCommand extends Command<void> {
         'software',
         abbr: 's',
         mandatory: true,
-        help: 'The name of the software which the instruction will be added to.',
+        help:
+            'The name of the software which the instruction will be added to.',
       );
   }
 
@@ -48,21 +47,29 @@ class AddInstructionCommand extends Command<void> {
   String get name => "add-instruction";
 
   @override
-  String get description => "Add a release instruction to an existing software.";
+  String get description =>
+      "Add a release instruction to an existing software.";
 
   @override
   Future<void> run() async {
     String instructionName = argResults?['name'].toLowerCase();
     String softwareName = argResults?['software'];
 
-    Software? software = await _softwareRepository.findByName(softwareName);
+    Software? software = await softwareRepository.findByName(softwareName);
     if (software == null) {
       throw ArgumentError("Software '$softwareName' not found.");
     }
 
+    int executionOrder = 1;
+    if (software.releaseInstructions.isNotEmpty) {
+      software.releaseInstructions.sort();
+      executionOrder = software.releaseInstructions.last.executionOrder + 1;
+    }
+
     String rootPath = software.rootPath.toFilePath();
     String destPath = software.releasePath.toFilePath();
-    String hintMessage = "\n┌────────────────────────────────────────────────────────────────────┐"
+    String hintMessage =
+        "\n┌────────────────────────────────────────────────────────────────────┐"
         "\n│ Available placeholders (be careful for trailing path separators!): │"
         "\n│ - \${name} => '${software.name}"
         "\n│ - \${root_path} => '$rootPath"
@@ -73,72 +80,69 @@ class AddInstructionCommand extends Command<void> {
     Instruction instruction;
     switch (instructionName) {
       case "copy":
-        instruction = _buildCopyInstruction(hintMessage);
+        instruction = _buildCopyInstruction(hintMessage, executionOrder);
         break;
 
       case "zip":
-        instruction = _buildZipInstruction(hintMessage);
+        instruction = _buildZipInstruction(hintMessage, executionOrder);
         break;
 
       case "shell":
-        instruction = _buildShellInstruction(hintMessage);
+        instruction = _buildShellInstruction(hintMessage, executionOrder);
 
       default:
         throw ArgumentError("Instruction '$instructionName' not found");
     }
 
     software.addInstruction(instruction);
-    await _softwareRepository.save(software);
+    await softwareRepository.save(software);
 
-    onPrint("Instruction '$instructionName' added successfully to software"
+    onStdOut("Instruction '$instructionName' added successfully to software"
         " '${software.name}.");
-    onPrint("  (Use \"releaser release -s ${software.name}\" to execute all"
+    onStdOut("  (Use \"releaser release -s ${software.name}\" to execute all"
         " instruction for this software)");
   }
 
-  Instruction _buildCopyInstruction(String hintMessage) {
-    onPrint(hintMessage);
-    onPrint("Enter the source path:");
-    String? sourcePath = onInput();
+  Instruction _buildCopyInstruction(String hintMessage, int executionOrder) {
+    onStdOut(hintMessage);
+    onStdOut("Enter the source path:");
+    String? sourcePath = onStdIn();
 
-    onPrint("Enter the destination path:");
-    String? destinationPath = onInput();
+    onStdOut("Enter the destination path:");
+    String? destinationPath = onStdIn();
 
     return CopyInstruction(
-      executionOrder: 1,
+      executionOrder: executionOrder,
       sourcePath: Uri.file(sourcePath!),
       destinationPath: Uri.file(destinationPath!),
-      os: Platform.operatingSystem,
     );
   }
 
-  Instruction _buildZipInstruction(String hintMessage) {
-    onPrint(hintMessage);
-    onPrint("Enter the source path:");
-    String? sourcePath = onInput();
+  Instruction _buildZipInstruction(String hintMessage, int executionOrder) {
+    onStdOut(hintMessage);
+    onStdOut("Enter the source path:");
+    String? sourcePath = onStdIn();
 
-    onPrint("Enter the destination path:");
-    String? destinationPath = onInput();
+    onStdOut("Enter the destination path:");
+    String? destinationPath = onStdIn();
 
     return ZipInstruction(
-      executionOrder: 1,
-      zipFileEncoder: _zipFileEncoder,
+      executionOrder: executionOrder,
       sourceDirectory: Directory(sourcePath!),
       destinationPath: Uri.file(destinationPath!),
     );
   }
 
-  Instruction _buildShellInstruction(String hintMessage) {
-    onPrint(hintMessage);
-    onPrint("Try to execute the script manually, before adding it here,"
+  Instruction _buildShellInstruction(String hintMessage, int executionOrder) {
+    onStdOut(hintMessage);
+    onStdOut("Try to execute the script manually, before adding it here,"
         " to check if it's correct and working as expected.");
-    onPrint("Enter the shell script:");
-    String? shellScript = onInput();
+    onStdOut("Enter the shell script:");
+    String? shellScript = onStdIn();
 
     return ShellInstruction(
-      executionOrder: 1,
+      executionOrder: executionOrder,
       shellScript: shellScript!,
-      os: Platform.operatingSystem,
     );
   }
 }

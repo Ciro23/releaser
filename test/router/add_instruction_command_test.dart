@@ -96,12 +96,13 @@ void main() {
         .thenAnswer((_) async => software);
 
     await addCopyInstruction.run();
-    software.addInstruction(CopyInstruction(
-      executionOrder: 1,
-      sourcePath: Uri.file("test"),
-      destinationPath: Uri.file("test"),
-      os: Platform.operatingSystem,
-    ));
+    software.addInstruction(
+      CopyInstruction(
+        executionOrder: 1,
+        sourcePath: Uri.file("test"),
+        destinationPath: Uri.file("test"),
+      ),
+    );
 
     verify(softwareRepository.save(software)).called(1);
   });
@@ -117,12 +118,13 @@ void main() {
         .thenAnswer((_) async => software);
 
     await addZipInstruction.run();
-    software.addInstruction(CopyInstruction(
-      executionOrder: 1,
-      sourcePath: Uri.file("test"),
-      destinationPath: Uri.file("test"),
-      os: Platform.operatingSystem,
-    ));
+    software.addInstruction(
+      CopyInstruction(
+        executionOrder: 1,
+        sourcePath: Uri.file("test"),
+        destinationPath: Uri.file("test"),
+      ),
+    );
 
     verify(softwareRepository.save(software)).called(1);
   });
@@ -138,8 +140,8 @@ class TestableAddInstruction extends AddInstructionCommand {
     required super.zipFileEncoder,
     required this.arguments,
   }) : super(
-          onPrint: (_) {},
-          onInput: () => "mocked_user_input",
+          onStdOut: (_) {},
+          onStdIn: () => "mocked_user_input",
         );
 
   @override

@@ -5,8 +5,9 @@ import '../paths/paths.dart';
 import '../software/software.dart';
 
 class EditSoftwareCommand extends Command<void> {
-  final SoftwareRepository _softwareRepository;
-  final void Function(Object?) onPrint;
+  final SoftwareRepository softwareRepository;
+  final void Function(Object?) onStdOut;
+  final void Function(Object?) onStdErr;
 
   @override
   String get name => "edit-software";
@@ -14,7 +15,11 @@ class EditSoftwareCommand extends Command<void> {
   @override
   String get description => "Edit a software's properties.";
 
-  EditSoftwareCommand(this._softwareRepository, this.onPrint) {
+  EditSoftwareCommand({
+    required this.softwareRepository,
+    required this.onStdOut,
+    required this.onStdErr,
+  }) {
     argParser
       ..addOption(
         'software',
@@ -42,30 +47,30 @@ class EditSoftwareCommand extends Command<void> {
   @override
   Future<void> run() async {
     String softwareName = argResults?['software'];
-    Software? existingSoftware = await _softwareRepository.findByName(
+    Software? existingSoftware = await softwareRepository.findByName(
       softwareName,
     );
     if (existingSoftware == null) {
-      onPrint("Software with name '$softwareName' doesn't exist.");
+      onStdErr("Software with name '$softwareName' doesn't exist.");
       return;
     }
 
     if (argResults?['name'] == null &&
         argResults?['root'] == null &&
         argResults?['dest'] == null) {
-      onPrint("No software's property set to be updated.");
-      onPrint("Use '$name --help' for more information.");
+      onStdErr("No software's property set to be updated.");
+      onStdOut("Use '$name --help' for more information.");
       return;
     }
 
     Software updatedSoftware = _updateSoftwareProperties(existingSoftware);
 
     try {
-      await _softwareRepository.save(updatedSoftware);
-      onPrint("Software '${existingSoftware.name}' updated successfully.");
+      await softwareRepository.save(updatedSoftware);
+      onStdOut("Software '${existingSoftware.name}' updated successfully.");
     } on StateError catch (e) {
-      onPrint(e);
-      onPrint("  (Use \"releaser list\" to verify existing software)");
+      onStdErr(e);
+      onStdOut("  (Use \"releaser list\" to verify existing software)");
     }
   }
 

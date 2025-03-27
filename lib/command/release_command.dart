@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:args/command_runner.dart';
+import 'package:releaser/instruction/instruction_visitor.dart';
 import 'package:releaser/software/software_repository.dart';
 
 import '../instruction/instruction.dart';
@@ -9,11 +10,18 @@ import '../software/software.dart';
 /// Starts the execution of all the release instructions for
 /// the specified software.
 class ReleaseCommand extends Command<void> {
-  final SoftwareRepository _softwareRepository;
+  final SoftwareRepository softwareRepository;
+  final InstructionVisitor instructionRunner;
+
+  final void Function(Object?) onStdOut;
+  final void Function(Object?) onStdErr;
 
   ReleaseCommand({
-    required SoftwareRepository softwareRepository,
-  }) : _softwareRepository = softwareRepository {
+    required this.softwareRepository,
+    required this.instructionRunner,
+    required this.onStdOut,
+    required this.onStdErr,
+  }) {
     argParser
       ..addOption(
         'software',
@@ -41,25 +49,23 @@ class ReleaseCommand extends Command<void> {
     String softwareName = argResults?['software'];
     String version = argResults?['version'];
 
-    Software? software = await _softwareRepository.findByName(softwareName);
+    Software? software = await softwareRepository.findByName(softwareName);
     if (software == null) {
       throw ArgumentError("Software '$softwareName' not found.");
     }
 
     Software parsedSoftware = _parseInstructions(software, version: version);
     if (parsedSoftware.releaseInstructions.isEmpty) {
-      stdout.writeln("No instructions have been specified for the release of"
-          " ${parsedSoftware.name}. Cancelling...");
-      stdout.writeln("  (Use \"releaser add-instruction\" to set the first"
+      onStdErr("Warning: No instructions have been specified for the release"
+          " of ${parsedSoftware.name}. Operation cancelled.");
+      onStdOut("  (Use \"releaser add-instruction\" to set the first"
           " instruction)");
     }
 
-    parsedSoftware.releaseInstructions
-        .sort((a, b) => a.executionOrder.compareTo(b.executionOrder));
-
+    parsedSoftware.releaseInstructions.sort();
     for (final instruction in parsedSoftware.releaseInstructions) {
-      stdout.writeln(instruction.executeMessage);
-      await instruction.execute();
+      onStdOut(instruction.executeMessage);
+      await instruction.accept(instructionRunner);
     }
   }
 
@@ -81,9 +87,7 @@ class ReleaseCommand extends Command<void> {
         parsedArguments.add(parsedArgument);
       }
 
-      Instruction parsedInstruction = instruction.create(
-        instruction.id,
-        instruction.executionOrder,
+      Instruction parsedInstruction = instruction.copyWithArguments(
         parsedArguments,
       );
       parsedInstructions.add(parsedInstruction);

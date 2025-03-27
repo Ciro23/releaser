@@ -12,6 +12,6 @@ void main() {
   test("all file paths do not end with a separator", () {
     String separator = Paths.getSeparator();
 
-    expect(Paths.getSoftwarePath().endsWith(separator), false);
+    expect(Paths.getDatabasePath().endsWith(separator), false);
   });
 }

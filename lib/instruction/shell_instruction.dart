@@ -4,6 +4,7 @@ import 'package:io/io.dart';
 import 'package:uuid/uuid.dart';
 
 import 'instruction.dart';
+import 'instruction_visitor.dart';
 
 /// Use this instruction to execute all kinds of commands
 /// using the shell currently installed on the user's computer.
@@ -12,75 +13,61 @@ import 'instruction.dart';
 /// is defined, otherwise `/bin/sh`.
 /// The script's syntax must be compatible with the installed
 /// shell.
-class ShellInstruction implements Instruction<ShellInstruction> {
-  final int? _id;
-
+class ShellInstruction extends Instruction {
   @override
-  final int executionOrder;
-
-  /// E.g. "tar -C project_directory/ -czf compressed_folder.tar.gz ./"
-  final String shellScript;
-
-  /// The name of the operating system to know
-  /// which shell to use.
-  /// See [Platform.operatingSystem].
-  final String os;
-
-  ShellInstruction({
-    int? id,
-    required this.executionOrder,
-    required this.shellScript,
-    required String os,
-  })  : _id = id,
-        os = os.toLowerCase();
-
-  @override
-  Future<void> execute() async {
-    String? shell;
-    List<String> args;
-
-    if (os == "windows") {
-      shell = 'powershell';
-      args = ['-Command', shellScript];
-    } else {
-      shell = Platform.environment['SHELL'] ?? '/bin/sh';
-      args = ['-c', shellScript];
-    }
-
-    final result = await Process.run(shell, args);
-    if (result.exitCode != 0) {
-      throw Exception('Script execution failed: ${result.stderr}');
-    }
-  }
-
-  @override
-  int? get id => _id;
+  final int? id;
 
   @override
   String get name => "Shell";
 
   @override
-  List<String> get arguments => [shellScript];
+  String get executeMessage => "Running shell script: $shellScript";
 
   @override
-  String get executeMessage => "Running shell script: $shellScript";
+  final int executionOrder;
+
+  @override
+  List<String> get arguments => [shellScript];
+
+  /// E.g. "tar -C project_directory/ -czf compressed_folder.tar.gz ./"
+  late final String shellScript;
+
+  ShellInstruction({
+    this.id,
+    required this.executionOrder,
+    required this.shellScript,
+  });
+
+  @override
+  Future<void> accept(InstructionVisitor visitor) async {
+    visitor.doForShell(this);
+  }
+
+  @override
+  Instruction copyWithArguments(List<String> arguments) {
+    return ShellInstruction.fromArguments(
+      id: id,
+      executionOrder: executionOrder,
+      arguments: arguments,
+    );
+  }
+
+  /// The first and only element of [arguments] is the shell script
+  /// to run.
+  factory ShellInstruction.fromArguments({
+    int? id,
+    required int executionOrder,
+    required List<String> arguments,
+  }) {
+    return ShellInstruction(
+      id: id,
+      executionOrder: executionOrder,
+      shellScript: arguments.first,
+    );
+  }
 
   @override
   String toString() {
     return "Shell (script: $shellScript)";
-  }
-
-  @override
-  ShellInstruction create(
-    int? id,
-    int order,
-    List<String> arguments,
-  ) {
-    return ShellInstruction(
-      id: id,
-      executionOrder: order,
-      shellScript: arguments[0],
-      os: os,
-    );
   }
 }

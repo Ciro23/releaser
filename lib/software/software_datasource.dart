@@ -4,6 +4,7 @@ import 'package:archive/archive_io.dart';
 import 'package:releaser/database/database.dart';
 import 'package:releaser/database/instruction_dao.dart';
 import 'package:releaser/database/instruction_entity.dart';
+import 'package:releaser/instruction/instruction_factory.dart';
 import 'package:releaser/instruction/shell_instruction.dart';
 import 'package:releaser/instruction/zip_instruction.dart';
 import 'package:releaser/software/software.dart';
@@ -19,12 +20,15 @@ import '../instruction/instruction.dart';
 class SoftwareDataSource implements SoftwareRepository {
   final ZipFileEncoder zipFileEncoder;
   final SoftwareDao softwareDao;
+
   final InstructionDao instructionDao;
+  final InstructionFactory instructionFactory;
 
   SoftwareDataSource({
     required this.zipFileEncoder,
     required this.softwareDao,
     required this.instructionDao,
+    required this.instructionFactory,
   });
 
   @override
@@ -167,36 +171,11 @@ class SoftwareDataSource implements SoftwareRepository {
       argument.replaceAll('"', '');
     }
 
-    if (db.name.toLowerCase() == "copy") {
-      return CopyInstruction(
-        id: db.id,
-        executionOrder: db.executionOrder,
-        sourcePath: Uri.file(arguments[0]),
-        destinationPath: Uri.file(arguments[1]),
-        os: Platform.operatingSystem,
-      );
-    }
-
-    if (db.name.toLowerCase() == "zip") {
-      return ZipInstruction(
-        id: db.id,
-        executionOrder: db.executionOrder,
-        sourceDirectory: Directory(arguments[0]),
-        destinationPath: Uri.file(arguments[1]),
-        zipFileEncoder: zipFileEncoder,
-      );
-    }
-
-    if (db.name.toLowerCase() == "shell") {
-      return ShellInstruction(
-        id: db.id,
-        executionOrder: db.executionOrder,
-        shellScript: arguments[0],
-        os: Platform.operatingSystem,
-      );
-    }
-
-    throw UnsupportedError("The instruction '${db.name}' is not supported and"
-        " cannot be deserialized.");
+    return instructionFactory.createInstruction(
+      db.name,
+      db.id!,
+      db.executionOrder,
+      arguments,
+    );
   }
 }

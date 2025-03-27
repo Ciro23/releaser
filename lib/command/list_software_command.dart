@@ -7,38 +7,45 @@ import '../software/software.dart';
 /// Lists all saved software along all their details and
 /// release instructions.
 class ListSoftwareCommand extends Command<void> {
-  final SoftwareRepository _softwareRepository;
-  final void Function(Object?) onPrint;
+  final SoftwareRepository softwareRepository;
+  final void Function(Object?) onStdOut;
+  final void Function(Object?) onStdErr;
 
-  ListSoftwareCommand(this._softwareRepository, this.onPrint);
+  ListSoftwareCommand({
+    required this.softwareRepository,
+    required this.onStdOut,
+    required this.onStdErr,
+  });
 
   @override
   String get name => "list";
 
   @override
-  String get description => "Show the list of all software managed by releaser.";
+  String get description =>
+      "Show the list of all software managed by releaser.";
 
   @override
   void run() async {
-    List<Software> softwareList = await _softwareRepository.findAll();
+    List<Software> softwareList = await softwareRepository.findAll();
     if (softwareList.isEmpty) {
-      onPrint("No registered software.");
-      onPrint(
+      onStdErr("No registered software.");
+      onStdOut(
           "  (Use \"releaser add-software\" to register the first software)");
     }
 
     for (var element in softwareList) {
-      onPrint("Name: ${element.name}");
-      onPrint("Root path: ${element.rootPath.toFilePath()}");
-      onPrint("Release path: ${element.releasePath.toFilePath()}");
-      onPrint(
+      onStdOut("Name: ${element.name}");
+      onStdOut("Root path: ${element.rootPath.toFilePath()}");
+      onStdOut("Release path: ${element.releasePath.toFilePath()}");
+      onStdOut(
           "Instructions: ${element.releaseInstructions.isEmpty ? 'none' : ''}");
 
+      element.releaseInstructions.sort();
       for (int i = 0; i < element.releaseInstructions.length; i++) {
         Instruction instruction = element.releaseInstructions[i];
-        onPrint("  ${i + 1}. $instruction");
+        onStdOut("  ${i + 1}. $instruction");
       }
-      onPrint("----------------------------------------");
+      onStdOut("----------------------------------------");
     }
   }
 }

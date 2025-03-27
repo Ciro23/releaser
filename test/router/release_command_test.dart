@@ -1,11 +1,13 @@
 import 'dart:io';
 
+import 'package:archive/archive_io.dart';
 import 'package:args/args.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:releaser/command/release_command.dart';
 import 'package:releaser/instruction/copy_instruction.dart';
 import 'package:releaser/instruction/instruction.dart';
+import 'package:releaser/instruction/instruction_visitor.dart';
 import 'package:releaser/software/software.dart';
 import 'package:releaser/software/software_repository.dart';
 import 'package:test/test.dart';
@@ -29,6 +31,10 @@ void main() {
         "--version",
         "1.0.0",
       ],
+      instructionRunner: InstructionVisitor(
+        os: Platform.operatingSystem,
+        zipFileEncoder: ZipFileEncoder(),
+      ),
     );
   });
 
@@ -41,10 +47,12 @@ void main() {
 
   test("instruction variables should be parsed", () async {
     TestableInstruction instruction = TestableInstruction(
-        sourcePath: Uri.file(r"${root_path}"),
-        destinationPath: Uri.file(
-          r"${dest_path}",
-        ));
+      executionOrder: 1,
+      sourcePath: Uri.file(r"${root_path}"),
+      destinationPath: Uri.file(
+        r"${dest_path}",
+      ),
+    );
 
     Software software = Software(
       name: "test_software",
@@ -70,6 +78,7 @@ class TestableReleaseCommand extends ReleaseCommand {
 
   TestableReleaseCommand({
     required super.softwareRepository,
+    required super.instructionRunner,
     required this.arguments,
   });
 
@@ -85,19 +94,20 @@ class TestableInstruction extends CopyInstruction {
   TestableInstruction? parsedInstruction;
 
   TestableInstruction({
+    required super.executionOrder,
     required super.sourcePath,
     required super.destinationPath,
-  }) : super(os: Platform.operatingSystem);
+  });
 
   @override
-  Future<void> execute() async {}
+  Future<void> accept(InstructionVisitor visitor) async {}
 
   @override
-  CopyInstruction create(int? id, List<String> arguments) {
-    parsedInstruction = TestableInstruction(
+  CopyInstruction copyWithArguments(List<String> arguments) {
+    return TestableInstruction(
+      executionOrder: executionOrder,
       sourcePath: Uri.file(arguments[0]),
       destinationPath: Uri.file(arguments[1]),
     );
-    return parsedInstruction!;
   }
 }

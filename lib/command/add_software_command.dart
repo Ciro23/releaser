@@ -7,8 +7,9 @@ import '../paths/paths.dart';
 /// Software are required to create and configure
 /// a release.
 class AddSoftwareCommand extends Command<void> {
-  final SoftwareRepository _softwareRepository;
-  final void Function(Object?) onPrint;
+  final SoftwareRepository softwareRepository;
+  final void Function(Object?) onStdOut;
+  final void Function(Object?) onStdErr;
 
   @override
   String get name => "add-software";
@@ -16,7 +17,11 @@ class AddSoftwareCommand extends Command<void> {
   @override
   String get description => "Add a software to the managed ones by releaser.";
 
-  AddSoftwareCommand(this._softwareRepository, this.onPrint) {
+  AddSoftwareCommand({
+    required this.softwareRepository,
+    required this.onStdOut,
+    required this.onStdErr,
+  }) {
     argParser
       ..addOption(
         'name',
@@ -28,7 +33,7 @@ class AddSoftwareCommand extends Command<void> {
         'root',
         abbr: 'r',
         mandatory: true,
-        help: 'The root path of the software.',
+        help: 'The root path of the software source code.',
       )
       ..addOption(
         'dest',
@@ -51,16 +56,16 @@ class AddSoftwareCommand extends Command<void> {
     );
 
     try {
-      await _softwareRepository.save(software);
+      await softwareRepository.save(software);
 
-      onPrint("Software '${software.name}' added successfully"
+      onStdOut("Software '${software.name}' added successfully"
           " to '${Paths.getDatabasePath()}'.");
-      onPrint(
+      onStdOut(
           "  (Use \"releaser add-instruction -s ${software.name}\" to create"
           " the first release instruction)");
     } on StateError catch (e) {
-      onPrint(e);
-      onPrint("  (Use \"releaser list\" to verify existing software)");
+      onStdErr(e);
+      onStdOut("  (Use \"releaser list\" to verify existing software)");
     }
   }
 }

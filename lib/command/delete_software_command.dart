@@ -4,8 +4,9 @@ import '../software/software.dart';
 import '../software/software_repository.dart';
 
 class DeleteSoftwareCommand extends Command<void> {
-  final SoftwareRepository _softwareRepository;
-  final void Function(Object?) onPrint;
+  final SoftwareRepository softwareRepository;
+  final void Function(Object?) onStdOut;
+  final void Function(Object?) onStdErr;
 
   @override
   String get name => "delete-software";
@@ -13,26 +14,32 @@ class DeleteSoftwareCommand extends Command<void> {
   @override
   String get description => "Delete a software and all its instructions.";
 
-  DeleteSoftwareCommand(this._softwareRepository, this.onPrint);
+  DeleteSoftwareCommand({
+    required this.softwareRepository,
+    required this.onStdOut,
+    required this.onStdErr,
+  });
 
   @override
   Future<void> run() async {
     String? softwareName = argResults?.rest.firstOrNull;
     if (softwareName == null) {
-      throw ArgumentError("No software name specified using positional"
+      onStdErr("No software name specified using positional"
           " arguments.");
+      return;
     }
 
-    Software? software = await _softwareRepository.findByName(softwareName);
+    Software? software = await softwareRepository.findByName(softwareName);
     if (software == null) {
-      throw ArgumentError("Software '$softwareName' not found.");
+      onStdErr("Software '$softwareName' not found.");
+      return;
     }
 
-    bool result = await _softwareRepository.delete(software);
+    bool result = await softwareRepository.delete(software);
     if (result) {
-      onPrint("Software '$softwareName' was successfully deleted.");
+      onStdOut("Software '$softwareName' was successfully deleted.");
     } else {
-      onPrint("Software '$softwareName' could not be deleted.");
+      onStdErr("Software '$softwareName' could not be deleted.");
     }
   }
 }
