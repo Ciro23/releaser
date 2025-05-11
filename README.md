@@ -29,11 +29,13 @@ releaser add-instruction --name <instruction_name> --software <software_name>
 
 Based on the implementation, all the required arguments will be asked immediately afterwards via
 the standard input. The available instructions are:
+
 - `copy`: copies a file or a directory to the specified destination path (cross-platform compatible).
 - `zip`: compresses only directories to the specified destination path (cross-platform compatible).
 - `shell`: runs a shell script on the user's default shell (_Bash_, _Zsh_, _PowerShell_, etc.).
 
 All instruction arguments can contain placeholders. The following ones are available:
+
 - `${name}`
 - `${root_path}`
 - `${dest_path}`
@@ -80,7 +82,7 @@ releaser delete-software --software <software_name>
 This is a real world example to use the **releaser** tool.
 
 ```shell
-releaser add-software --name my_software --root /home/ciro23/my_software/ --dest /home/ciro23/released_builds/
+releaser add-software --name my_software --root /home/ciro23/my_software/ --dest /home/ciro23/release_builds/
 ```
 
 ```
@@ -90,15 +92,15 @@ releaser add-instruction --software my_software --name copy
 Available placeholders:
 - ${name} => 'my_software'
 - ${root_path} => '/home/ciro23/my_software/'
-- ${dest_path} => '/home/ciro23/released_builds/'
+- ${dest_path} => '/home/ciro23/release_builds/'
 - ${version} => the specified version during release
 --------------------------------------------
 
 Enter the source path:
 ${root_path}build/executable
 
-Enter the destination path:
-${dest_path}${version}/
+Enter the destination path (non-existent directories are created automatically):
+${dest_path}${name}/${version}/
 ```
 
 ```
@@ -108,15 +110,15 @@ releaser add-instruction --software my_software --name zip
 Available placeholders:
 - ${name} => 'my_software'
 - ${root_path} => '/home/ciro23/my_software/'
-- ${dest_path} => '/home/ciro23/released_builds/'
+- ${dest_path} => '/home/ciro23/release_builds/'
 - ${version} => the specified version during release
 --------------------------------------------
 
 Enter the source path:
 ${root_path}
 
-Enter the destination path:
-${dest_path}${version}/${name}.zip
+Enter the destination path (non-existent directories are created automatically):
+${dest_path}${name}/${version}/${name}-${version}.zip
 ```
 
 ```
@@ -126,12 +128,12 @@ releaser add-instruction --software my_software --name shell
 Available placeholders:
 - ${name} => 'my_software'
 - ${root_path} => '/home/ciro23/my_software/'
-- ${dest_path} => '/home/ciro23/released_builds/'
+- ${dest_path} => '/home/ciro23/release_builds/'
 - ${version} => the specified version during release
 --------------------------------------------
 
 Enter the shell script:
-tar -czf ${dest_path}${version}/${name}.tar.gz -C ${root_path} .
+tar -czf ${dest_path}${name}/${version}/${name}-${version}.tar.gz -C ${root_path} .
 ```
 
 ```shell

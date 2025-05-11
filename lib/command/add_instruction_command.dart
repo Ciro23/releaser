@@ -111,7 +111,9 @@ class AddInstructionCommand extends Command<void> {
     onStdOut("Enter the source path:");
     String? sourcePath = onStdIn();
 
-    onStdOut("Enter the destination path:");
+    onStdOut(
+      "Enter the destination path (non-existent directories are created automatically):",
+    );
     String? destinationPath = onStdIn();
 
     return CopyInstruction(
@@ -126,7 +128,9 @@ class AddInstructionCommand extends Command<void> {
     onStdOut("Enter the source path:");
     String? sourcePath = onStdIn();
 
-    onStdOut("Enter the destination path:");
+    onStdOut(
+      "Enter the destination path (non-existent directories are created automatically):",
+    );
     String? destinationPath = onStdIn();
 
     return ZipInstruction(
